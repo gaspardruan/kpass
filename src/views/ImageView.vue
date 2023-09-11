@@ -7,7 +7,7 @@
         </n-gradient-text>
         <div class="text-gray-500 self-center ml-3">镜像管理界面</div>
       </div>
-      <n-button circle type="primary" class="py-2 self-center">
+      <n-button circle type="primary" class="py-2 self-center" @click="showModal = true">
         <template #icon>
           <n-icon size="24"><create-icon /></n-icon>
         </template>
@@ -34,19 +34,85 @@
         </n-tab-pane>
       </n-tabs>
     </div>
+
+    <n-modal
+      v-model:show="showModal"
+      class="custom-card"
+      preset="card"
+      :mask-closable="false"
+      :style="{ width: '600px' }"
+      title="创建镜像"
+      size="huge"
+      :bordered="false"
+      :closable="false"
+    >
+      <n-tabs type="line" animated @update:value="handleTabUpdate">
+        <n-tab-pane name="fromDockerfile" tab="Dockerfile">
+          <n-input v-model:value="dockerfile" type="textarea" rows="10" placeholder="Dockerfile" />
+        </n-tab-pane>
+        <n-tab-pane name="fromSource" tab="源代码压缩包">
+          <n-upload
+            directory-dnd
+            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+            class="h-52"
+          >
+            <n-upload-dragger>
+              <div>
+                <n-icon size="48" :depth="3">
+                  <archive-icon />
+                </n-icon>
+              </div>
+              <n-text style="font-size: 16px"> 点击或者拖动文件到该区域来上传 </n-text>
+              <n-p depth="3" style="margin: 8px 0 0 0">
+                请不要上传敏感数据，比如你的银行卡号和密码，信用卡号有效期和安全码
+              </n-p>
+            </n-upload-dragger>
+          </n-upload>
+        </n-tab-pane>
+        <n-tab-pane name="fromCodeHub" tab="代码仓库地址"> 代码仓库地址 </n-tab-pane>
+        <n-tab-pane name="fromImage" tab="镜像文件"> 镜像文件 </n-tab-pane>
+        <n-tab-pane name="fromPublicHub" tab="公共仓库"> 公共仓库 </n-tab-pane>
+      </n-tabs>
+      <template #footer>
+        <div class="flex w-32 mx-auto justify-between">
+          <n-button @click="closeModal">取消</n-button>
+          <n-button type="primary" @click="createImage">提交</n-button>
+        </div>
+      </template>
+    </n-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { NTag, NButton, NIcon, useMessage } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
   TrashBinSharp as DeleteIcon,
-  AddSharp as CreateIcon
+  AddSharp as CreateIcon,
+  ArchiveOutline as ArchiveIcon
 } from '@vicons/ionicons5'
+
+const showModal = ref(false)
+const curTab = ref('fromDockerfile')
+const dockerfile = ref('')
+const handleTabUpdate = (tab: string) => {
+  curTab.value = tab
+}
+const closeModal = () => {
+  showModal.value = false
+
+  dockerfile.value = ''
+  curTab.value = 'fromDockerfile'
+}
+const createImage = () => {
+  showModal.value = false
+
+  dockerfile.value = ''
+  curTab.value = 'fromDockerfile'
+}
 
 const data: Image[] = [
   {

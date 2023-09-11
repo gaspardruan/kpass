@@ -50,7 +50,7 @@ import BrandImg from '/kpass.svg'
 const route = useRoute()
 
 const inImage = computed(() => route.name === 'image')
-const inContainer = computed(() => route.name === 'container')
+const inContainer = computed(() => route.name === 'pod')
 
 // right part: icons
 </script>
