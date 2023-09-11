@@ -1,0 +1,29 @@
+@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: 'buding';
+  src: url('buding.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'zh-content';
+  src: url('simplehei.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'en-title';
+  src: url('PTSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'en-content';
+  src: url('SourceSansPro-Regular.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'code';
+  src: url('DejaVuSansMonoCondensed.otf') format('opentype');
+}
