@@ -7,11 +7,32 @@
         </n-gradient-text>
         <div class="text-gray-500 self-center ml-3">镜像管理界面</div>
       </div>
-      <n-button type="primary" class="py-2 self-center">创建镜像</n-button>
+      <n-button circle type="primary" class="py-2 self-center">
+        <template #icon>
+          <n-icon size="24"><create-icon /></n-icon>
+        </template>
+      </n-button>
     </div>
 
     <div :style="{ fontFamily: 'en-content' }">
-      <n-data-table :single-line="false" :columns="columns" :data="data" :pagination="pagination" />
+      <n-tabs type="line" animated>
+        <n-tab-pane name="privateImage" tab="私有镜像">
+          <n-data-table
+            :single-line="false"
+            :columns="columns"
+            :data="data"
+            :pagination="pagination"
+          />
+        </n-tab-pane>
+        <n-tab-pane name="publicImage" tab="公共镜像">
+          <n-data-table
+            :single-line="false"
+            :columns="columns"
+            :data="data"
+            :pagination="pagination"
+          />
+        </n-tab-pane>
+      </n-tabs>
     </div>
   </div>
 </template>
@@ -23,7 +44,8 @@ import type { DataTableColumns } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
-  TrashBinSharp as DeleteIcon
+  TrashBinSharp as DeleteIcon,
+  AddSharp as CreateIcon
 } from '@vicons/ionicons5'
 const data: Image[] = [
   {
