@@ -27,9 +27,9 @@
           'border-[#63e2b7]': inContainer,
           'border-b-2': inContainer
         }"
-        to="/container"
+        to="/pod"
       >
-        Container
+        Pod
       </router-link>
     </div>
     <div class="flex-none w-32 flex justify-around">

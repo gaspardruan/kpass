@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import ImageView from '@/views/ImageView.vue'
-import ContainerView from '@/views/ContainerView.vue'
+import PodView from '@/views/PodView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,9 +15,9 @@ const router = createRouter({
       component: ImageView
     },
     {
-      path: '/container',
-      name: 'container',
-      component: ContainerView
+      path: '/pod',
+      name: 'pod',
+      component: PodView
     }
   ]
 })

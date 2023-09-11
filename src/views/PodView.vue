@@ -3,9 +3,9 @@
     <div class="flex justify-between">
       <div class="flex py-2">
         <n-gradient-text :size="32" type="success" class="font-bold leading-relaxed tracking-wide">
-          镜像
+          Pod
         </n-gradient-text>
-        <div class="text-gray-500 self-center ml-3">镜像管理界面</div>
+        <div class="text-gray-500 self-center ml-3">Pod管理界面</div>
       </div>
       <n-button circle type="primary" class="py-2 self-center">
         <template #icon>
@@ -16,7 +16,7 @@
 
     <div :style="{ fontFamily: 'en-content' }">
       <n-tabs type="line" animated>
-        <n-tab-pane name="privateImage" tab="私有镜像">
+        <n-tab-pane name="pod" tab="Pod">
           <n-data-table
             :single-line="false"
             :columns="columns"
@@ -24,7 +24,15 @@
             :pagination="pagination"
           />
         </n-tab-pane>
-        <n-tab-pane name="publicImage" tab="公共镜像">
+        <n-tab-pane name="deployment" tab="Deployment">
+          <n-data-table
+            :single-line="false"
+            :columns="columns"
+            :data="data"
+            :pagination="pagination"
+          />
+        </n-tab-pane>
+        <n-tab-pane name="service" tab="Service">
           <n-data-table
             :single-line="false"
             :columns="columns"
@@ -47,28 +55,26 @@ import {
   TrashBinSharp as DeleteIcon,
   AddSharp as CreateIcon
 } from '@vicons/ionicons5'
-
-const data: Image[] = [
+const data: Pod[] = [
   {
-    id: 784414112576,
     name: 'John Brown',
-    size: 1024,
-    tags: ['nice', 'developer'],
-    createdAt: '2021-09-01 12:00:00'
+    ready: '100/100',
+    status: 'running',
+    restarts: 0,
+    age: '3d',
+    ip: '192.168.137.1',
+    node: 'node1',
+    tags: []
   },
   {
-    id: 1,
-    name: 'Jim Green',
-    size: 1023,
-    tags: ['wow'],
-    createdAt: '2021-09-01 12:00:00'
-  },
-  {
-    id: 2,
-    name: 'Joe Black',
-    size: 32,
-    tags: ['cool', 'teacher'],
-    createdAt: '2021-09-01 12:00:00'
+    name: 'John Brown2',
+    ready: '100/100',
+    status: 'exited(137)',
+    restarts: 0,
+    age: '3d',
+    ip: '192.168.137.123',
+    node: 'node1',
+    tags: []
   }
 ]
 
@@ -77,38 +83,57 @@ const pagination = {
 }
 
 const message = useMessage()
-const sendMail = (Image: Image) => {
-  message.info('send mail to ' + Image.name)
+const sendMail = (pod: Pod) => {
+  message.info('send mail to ' + pod.name)
 }
 
-const normalSize = (size: number) => {
-  if (size < 1024) {
-    return size + 'MB'
-  } else {
-    return (size / 1024).toFixed(2) + 'GB'
-  }
-}
-
-const columns: DataTableColumns<Image> = [
+const columns: DataTableColumns<Pod> = [
   {
-    title: '镜像ID',
-    key: 'id',
-    width: 130,
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '镜像名称',
+    title: 'Pod名称',
     key: 'name',
+    width: 150,
     ellipsis: {
       tooltip: true
     }
   },
   {
-    title: '镜像标签',
+    title: '就绪',
+    key: 'ready',
+    width: 90
+  },
+  {
+    title: '状态',
+    key: 'status',
+    width: 90
+  },
+  {
+    title: '重启',
+    key: 'restarts',
+    width: 90
+  },
+  {
+    title: '运行时长',
+    key: 'age',
+    width: 90
+  },
+  {
+    title: 'IP',
+    key: 'ip',
+    width: 120,
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '节点',
+    key: 'node',
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '标签',
     key: 'tags',
-
     ellipsis: {
       tooltip: true
     },
@@ -132,22 +157,6 @@ const columns: DataTableColumns<Image> = [
     }
   },
   {
-    title: '镜像大小',
-    key: 'size',
-    width: 85,
-    render: (row) => {
-      return normalSize(row.size)
-    }
-  },
-  {
-    title: '创建时间',
-    key: 'createdAt',
-    width: 150,
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
     title: '操作',
     key: 'actions',
     width: 120,
@@ -158,16 +167,6 @@ const columns: DataTableColumns<Image> = [
           class: 'flex justify-around w-24'
         },
         [
-          h(
-            NButton,
-            {
-              size: 'large',
-              type: 'primary',
-              text: true,
-              onClick: () => sendMail(row)
-            },
-            [h(NIcon, { size: 18 }, [h(PlayIcon)])]
-          ),
           h(
             NButton,
             {
