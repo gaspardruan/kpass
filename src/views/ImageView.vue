@@ -41,6 +41,7 @@
       :imageID="imageID"
       :imageName="imageName"
     />
+    <modify-image v-model:show="showModifyPodModal" :imageName="modifyImageName" />
   </div>
 </template>
 
@@ -57,8 +58,11 @@ import {
 
 const showModal = ref(false)
 const showCreatePodModal = ref(false)
+const showModifyPodModal = ref(false)
 const imageID = ref('')
 const imageName = ref('')
+
+const modifyImageName = ref('')
 
 const data: Image[] = [
   {
@@ -212,7 +216,10 @@ const columns: DataTableColumns<Image> = [
                     size: 'large',
                     type: 'primary',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => {
+                      showModifyPodModal.value = true
+                      modifyImageName.value = row.name
+                    }
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
