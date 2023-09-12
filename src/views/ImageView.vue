@@ -40,7 +40,7 @@
       class="custom-card"
       preset="card"
       :mask-closable="false"
-      :style="{ width: '600px' }"
+      :style="{ width: '600px', height: '450px' }"
       title="创建镜像"
       size="huge"
       :bordered="false"
@@ -48,7 +48,7 @@
     >
       <n-tabs type="line" animated @update:value="handleTabUpdate">
         <n-tab-pane name="fromDockerfile" tab="Dockerfile">
-          <n-input v-model:value="dockerfile" type="textarea" rows="10" placeholder="dockerfile" />
+          <n-input v-model:value="dockerfile" type="textarea" rows="9" placeholder="dockerfile" />
         </n-tab-pane>
         <n-tab-pane name="fromSource" tab="源代码压缩包">
           <n-upload
@@ -88,8 +88,13 @@
             </n-upload-dragger>
           </n-upload>
         </n-tab-pane>
-        <n-tab-pane name="fromCodeHub" tab="代码仓库地址"> 代码仓库地址 </n-tab-pane>
-        <n-tab-pane name="fromPublicHub" tab="公共仓库"> 公共仓库 </n-tab-pane>
+        <n-tab-pane name="fromCodeHub" tab="代码仓库地址">
+          <n-input-group class="py-8">
+            <n-tag size="large"> 代码仓库地址 </n-tag>
+            <n-input v-model:value="codeHubURL" :input-props="{ type: 'url' }" placeholder="URL" />
+          </n-input-group>
+        </n-tab-pane>
+        <n-tab-pane name="fromPublicHub" tab="公共仓库镜像"> 公共仓库镜像 </n-tab-pane>
       </n-tabs>
       <template #footer>
         <div class="flex w-32 mx-auto justify-between">
@@ -116,24 +121,28 @@ import {
 const showModal = ref(false)
 const curTab = ref('fromdockerfile')
 const dockerfile = ref('')
-const uploadFromSource = ref<UploadInst | null>(null)
-const uploadFromImage = ref<UploadInst | null>(null)
+const codeHubURL = ref('')
+const uploadFromSourceRef = ref<UploadInst | null>(null)
+const uploadFromImageRef = ref<UploadInst | null>(null)
 const handleTabUpdate = (tab: string) => {
   curTab.value = tab
 }
-const closeModal = () => {
-  showModal.value = false
 
+const cleanTab = () => {
+  showModal.value = false
   dockerfile.value = ''
+  codeHubURL.value = ''
   curTab.value = 'fromDockerfile'
 }
-const createImage = () => {
-  showModal.value = false
 
+const closeModal = () => {
+  cleanTab()
+}
+const createImage = () => {
   if (curTab.value === 'fromSource') {
-    uploadFromSource.value?.submit()
+    uploadFromSourceRef.value?.submit()
   } else if (curTab.value === 'fromImage') {
-    uploadFromImage.value?.submit()
+    uploadFromImageRef.value?.submit()
   } else if (curTab.value === 'fromCodeHub') {
     console.log('fromCodeHub')
   } else if (curTab.value === 'fromPublicHub') {
@@ -142,8 +151,7 @@ const createImage = () => {
     console.log('fromDockerfile')
   }
 
-  dockerfile.value = ''
-  curTab.value = 'fromDockerfile'
+  cleanTab()
 }
 
 const data: Image[] = [
