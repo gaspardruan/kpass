@@ -15,7 +15,7 @@
     </div>
 
     <div :style="{ fontFamily: 'en-content' }">
-      <n-tabs type="line" animated>
+      <n-tabs type="line" animated @update:value="handleTabUpdate">
         <n-tab-pane name="privateImage" tab="私有镜像">
           <n-data-table
             :single-line="false"
@@ -55,6 +55,11 @@ import {
   TrashBinSharp as DeleteIcon,
   AddSharp as CreateIcon
 } from '@vicons/ionicons5'
+
+const curTab = ref('privateImage')
+const handleTabUpdate = (tab: string) => {
+  curTab.value = tab
+}
 
 const showModal = ref(false)
 const showCreatePodModal = ref(false)
@@ -211,55 +216,59 @@ const columns: DataTableColumns<Image> = [
                 )
             }
           ),
-          h(
-            NTooltip,
-            {
-              trigger: 'hover',
-              delay: 500
-            },
-            {
-              default: () => '修改镜像',
-              trigger: () =>
-                h(
-                  NButton,
-                  {
-                    size: 'large',
-                    type: 'primary',
-                    text: true,
-                    onClick: () => {
-                      showModifyPodModal.value = true
-                      modifyImageName.value = row.name
-                    }
-                  },
-                  {
-                    default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
-                  }
-                )
-            }
-          ),
-          h(
-            NTooltip,
-            {
-              trigger: 'hover',
-              delay: 500
-            },
-            {
-              default: () => '删除镜像',
-              trigger: () =>
-                h(
-                  NButton,
-                  {
-                    size: 'large',
-                    type: 'warning',
-                    text: true,
-                    onClick: () => handleDeleteImage(row.id, row.name)
-                  },
-                  {
-                    default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
-                  }
-                )
-            }
-          )
+          curTab.value === 'privateImage'
+            ? h(
+                NTooltip,
+                {
+                  trigger: 'hover',
+                  delay: 500
+                },
+                {
+                  default: () => '修改镜像',
+                  trigger: () =>
+                    h(
+                      NButton,
+                      {
+                        size: 'large',
+                        type: 'primary',
+                        text: true,
+                        onClick: () => {
+                          showModifyPodModal.value = true
+                          modifyImageName.value = row.name
+                        }
+                      },
+                      {
+                        default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
+                      }
+                    )
+                }
+              )
+            : null,
+          curTab.value === 'privateImage'
+            ? h(
+                NTooltip,
+                {
+                  trigger: 'hover',
+                  delay: 500
+                },
+                {
+                  default: () => '删除镜像',
+                  trigger: () =>
+                    h(
+                      NButton,
+                      {
+                        size: 'large',
+                        type: 'warning',
+                        text: true,
+                        onClick: () => handleDeleteImage(row.id, row.name)
+                      },
+                      {
+                        default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
+                      }
+                    )
+                }
+              )
+            : null
         ]
       )
     }
