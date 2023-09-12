@@ -47,7 +47,7 @@
 
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { NTag, NButton, NIcon, NTooltip, useMessage } from 'naive-ui'
+import { NTag, NButton, NIcon, NTooltip, useMessage, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
@@ -59,6 +59,7 @@ import {
 const showModal = ref(false)
 const showCreatePodModal = ref(false)
 const showModifyPodModal = ref(false)
+
 const imageID = ref('')
 const imageName = ref('')
 
@@ -93,8 +94,17 @@ const pagination = {
 }
 
 const message = useMessage()
-const sendMail = (Image: Image) => {
-  message.info('send mail to ' + Image.name)
+const dialog = useDialog()
+const handleDeleteImage = (imageID: string, imageName: string) => {
+  dialog.warning({
+    title: '删除镜像',
+    content: '确定删除镜像 ' + imageName + ' 吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      message.success('删除镜像' + imageID + '成功')
+    }
+  })
 }
 
 const normalSize = (size: number) => {
@@ -242,7 +252,7 @@ const columns: DataTableColumns<Image> = [
                     size: 'large',
                     type: 'warning',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => handleDeleteImage(row.id, row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })

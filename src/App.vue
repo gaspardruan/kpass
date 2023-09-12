@@ -6,9 +6,11 @@ import GlobalContent from '@/components/GlobalContent.vue'
 <template>
   <global-header class="z-50" />
   <n-message-provider>
-    <global-content class="z-10">
-      <router-view />
-    </global-content>
+    <n-dialog-provider>
+      <global-content class="z-10">
+        <router-view />
+      </global-content>
+    </n-dialog-provider>
   </n-message-provider>
 </template>
 
