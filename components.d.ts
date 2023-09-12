@@ -10,6 +10,7 @@ declare module 'vue' {
     BlogInfoPanel: typeof import('./src/components/article/BlogInfoPanel.vue')['default']
     BlogList: typeof import('./src/components/article/BlogList.vue')['default']
     BlogListItem: typeof import('./src/components/article/BlogListItem.vue')['default']
+    CreateImage: typeof import('./src/components/CreateImage.vue')['default']
     GlobalContent: typeof import('./src/components/GlobalContent.vue')['default']
     GlobalHeader: typeof import('./src/components/GlobalHeader.vue')['default']
     NButton: typeof import('naive-ui')['NButton']
