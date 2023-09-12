@@ -1,11 +1,11 @@
 <template>
   <div class="py-3 w-4/5 mx-auto">
     <div class="flex justify-between">
-      <div class="flex py-2">
+      <div class="flex py-2" :style="{ fontFamily: 'en-title' }">
         <n-gradient-text :size="32" type="success" class="font-bold leading-relaxed tracking-wide">
-          镜像
+          Image
         </n-gradient-text>
-        <div class="text-gray-500 self-center ml-3">镜像管理界面</div>
+        <div class="text-gray-400 self-center ml-3">Image管理界面</div>
       </div>
       <n-button circle type="primary" class="py-2 self-center" @click="showModal = true">
         <template #icon>
