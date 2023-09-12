@@ -95,7 +95,7 @@ const columns: DataTableColumns<Pod> = [
   {
     title: '状态',
     key: 'status',
-    width: 90
+    width: 95
   },
   {
     title: '重启',
@@ -190,7 +190,7 @@ const columns: DataTableColumns<Pod> = [
                   NButton,
                   {
                     size: 'large',
-                    type: 'error',
+                    type: 'warning',
                     text: true,
                     onClick: () => sendMail(row)
                   },

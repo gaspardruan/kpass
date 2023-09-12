@@ -173,7 +173,7 @@ const columns: DataTableColumns<Pod> = [
                   NButton,
                   {
                     size: 'large',
-                    type: 'error',
+                    type: 'warning',
                     text: true,
                     onClick: () => sendMail(row)
                   },

@@ -52,7 +52,7 @@
         </n-tab-pane>
         <n-tab-pane name="fromSource" tab="源代码压缩包">
           <n-upload
-            ref="uploadFromSource"
+            ref="uploadFromSourceRef"
             directory-dnd
             action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
             class="h-52"
@@ -71,7 +71,7 @@
         </n-tab-pane>
         <n-tab-pane name="fromImage" tab="镜像文件">
           <n-upload
-            ref="uploadFromImage"
+            ref="uploadFromImageRef"
             directory-dnd
             action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
             class="h-52"
@@ -94,7 +94,21 @@
             <n-input v-model:value="codeHubURL" :input-props="{ type: 'url' }" placeholder="URL" />
           </n-input-group>
         </n-tab-pane>
-        <n-tab-pane name="fromPublicHub" tab="公共仓库镜像"> 公共仓库镜像 </n-tab-pane>
+        <n-tab-pane name="fromPublicHub" tab="公共仓库镜像">
+          <n-input-group class="py-8">
+            <n-tag size="large"> 公共仓库镜像 </n-tag>
+            <n-select
+              filterable
+              placeholder="选择镜像"
+              :options="publicHubImages"
+              v-model:value="publicHubImage"
+            >
+              <template #arrow>
+                <search-icon />
+              </template>
+            </n-select>
+          </n-input-group>
+        </n-tab-pane>
       </n-tabs>
       <template #footer>
         <div class="flex w-32 mx-auto justify-between">
@@ -113,6 +127,7 @@ import type { DataTableColumns, UploadInst } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
+  Search as SearchIcon,
   TrashBinSharp as DeleteIcon,
   AddSharp as CreateIcon,
   ArchiveOutline as ArchiveIcon
@@ -122,6 +137,7 @@ const showModal = ref(false)
 const curTab = ref('fromdockerfile')
 const dockerfile = ref('')
 const codeHubURL = ref('')
+const publicHubImage = ref('')
 const uploadFromSourceRef = ref<UploadInst | null>(null)
 const uploadFromImageRef = ref<UploadInst | null>(null)
 const handleTabUpdate = (tab: string) => {
@@ -133,6 +149,7 @@ const cleanTab = () => {
   dockerfile.value = ''
   codeHubURL.value = ''
   curTab.value = 'fromDockerfile'
+  publicHubImage.value = ''
 }
 
 const closeModal = () => {
@@ -144,15 +161,34 @@ const createImage = () => {
   } else if (curTab.value === 'fromImage') {
     uploadFromImageRef.value?.submit()
   } else if (curTab.value === 'fromCodeHub') {
-    console.log('fromCodeHub')
+    console.log(codeHubURL.value)
   } else if (curTab.value === 'fromPublicHub') {
-    console.log('fromPublicHub')
+    console.log(publicHubImage.value)
   } else {
-    console.log('fromDockerfile')
+    console.log(dockerfile.value)
   }
 
   cleanTab()
 }
+
+const publicHubImages = [
+  {
+    label: 'nginx',
+    value: 'nginx'
+  },
+  {
+    label: 'wordpress',
+    value: 'wordpress'
+  },
+  {
+    label: 'redis',
+    value: 'redis'
+  },
+  {
+    label: 'mysql',
+    value: 'mysql'
+  }
+]
 
 const data: Image[] = [
   {
