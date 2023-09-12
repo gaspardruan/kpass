@@ -8,3 +8,10 @@ interface Pod {
   node: string
   tags: string[]
 }
+
+interface CreatePod {
+  imageID: string
+  imageName: string
+  podName: string
+  podPort: number | null
+}

@@ -174,7 +174,9 @@ const columns: DataTableColumns<Pod> = [
                     text: true,
                     onClick: () => sendMail(row)
                   },
-                  [h(NIcon, { size: 18 }, [h(EditIcon)])]
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
+                  }
                 )
             }
           ),
@@ -194,7 +196,9 @@ const columns: DataTableColumns<Pod> = [
                     text: true,
                     onClick: () => sendMail(row)
                   },
-                  [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
+                  }
                 )
             }
           )

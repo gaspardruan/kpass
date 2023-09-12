@@ -36,6 +36,11 @@
     </div>
 
     <create-image v-model:show="showModal" />
+    <simple-create-pod
+      v-model:show="showCreatePodModal"
+      :imageID="imageID"
+      :imageName="imageName"
+    />
   </div>
 </template>
 
@@ -50,27 +55,28 @@ import {
   AddSharp as CreateIcon
 } from '@vicons/ionicons5'
 
-import CreateImage from '@/components/CreateImage.vue'
-
 const showModal = ref(false)
+const showCreatePodModal = ref(false)
+const imageID = ref('')
+const imageName = ref('')
 
 const data: Image[] = [
   {
-    id: 784414112576,
+    id: '784414112576',
     name: 'John Brown',
     size: 1024,
     tags: ['nice', 'developer'],
     createdAt: '2021-09-01 12:00:00'
   },
   {
-    id: 1,
+    id: '1',
     name: 'Jim Green',
     size: 1023,
     tags: ['wow'],
     createdAt: '2021-09-01 12:00:00'
   },
   {
-    id: 2,
+    id: '2',
     name: 'Joe Black',
     size: 32,
     tags: ['cool', 'teacher'],
@@ -179,9 +185,15 @@ const columns: DataTableColumns<Image> = [
                     size: 'large',
                     type: 'primary',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => {
+                      showCreatePodModal.value = true
+                      imageID.value = row.id
+                      imageName.value = row.name
+                    }
                   },
-                  [h(NIcon, { size: 18 }, [h(PlayIcon)])]
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(PlayIcon) })
+                  }
                 )
             }
           ),
@@ -202,7 +214,9 @@ const columns: DataTableColumns<Image> = [
                     text: true,
                     onClick: () => sendMail(row)
                   },
-                  [h(NIcon, { size: 18 }, [h(EditIcon)])]
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
+                  }
                 )
             }
           ),
@@ -223,7 +237,9 @@ const columns: DataTableColumns<Image> = [
                     text: true,
                     onClick: () => sendMail(row)
                   },
-                  [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
+                  }
                 )
             }
           )

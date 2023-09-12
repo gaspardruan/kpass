@@ -12,7 +12,7 @@
   >
     <n-tabs type="line" animated @update:value="handleTabUpdate">
       <n-tab-pane name="fromDockerfile" tab="Dockerfile">
-        <n-input v-model:value="dockerfile" type="textarea" rows="9" placeholder="dockerfile" />
+        <n-input v-model:value="dockerfile" type="textarea" rows="9" placeholder="Dockerfile" />
       </n-tab-pane>
       <n-tab-pane name="fromSource" tab="源代码压缩包">
         <n-upload
