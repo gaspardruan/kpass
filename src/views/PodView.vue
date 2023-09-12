@@ -47,10 +47,9 @@
 
 <script setup lang="ts">
 import { h } from 'vue'
-import { NTag, NButton, NIcon, useMessage } from 'naive-ui'
+import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import {
-  PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
   TrashBinSharp as DeleteIcon,
   AddSharp as CreateIcon
@@ -168,24 +167,44 @@ const columns: DataTableColumns<Pod> = [
         },
         [
           h(
-            NButton,
+            NTooltip,
             {
-              size: 'large',
-              type: 'primary',
-              text: true,
-              onClick: () => sendMail(row)
+              trigger: 'hover'
             },
-            [h(NIcon, { size: 18 }, [h(EditIcon)])]
+            {
+              default: () => '修改Pod',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'primary',
+                    text: true,
+                    onClick: () => sendMail(row)
+                  },
+                  [h(NIcon, { size: 18 }, [h(EditIcon)])]
+                )
+            }
           ),
           h(
-            NButton,
+            NTooltip,
             {
-              size: 'large',
-              type: 'warning',
-              text: true,
-              onClick: () => sendMail(row)
+              trigger: 'hover'
             },
-            [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+            {
+              default: () => '删除Pod',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'error',
+                    text: true,
+                    onClick: () => sendMail(row)
+                  },
+                  [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+                )
+            }
           )
         ]
       )

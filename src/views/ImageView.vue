@@ -48,13 +48,15 @@
     >
       <n-tabs type="line" animated @update:value="handleTabUpdate">
         <n-tab-pane name="fromDockerfile" tab="Dockerfile">
-          <n-input v-model:value="dockerfile" type="textarea" rows="10" placeholder="Dockerfile" />
+          <n-input v-model:value="dockerfile" type="textarea" rows="10" placeholder="dockerfile" />
         </n-tab-pane>
         <n-tab-pane name="fromSource" tab="源代码压缩包">
           <n-upload
+            ref="uploadFromSource"
             directory-dnd
             action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
             class="h-52"
+            :default-upload="false"
           >
             <n-upload-dragger>
               <div>
@@ -63,14 +65,30 @@
                 </n-icon>
               </div>
               <n-text style="font-size: 16px"> 点击或者拖动文件到该区域来上传 </n-text>
-              <n-p depth="3" style="margin: 8px 0 0 0">
-                请不要上传敏感数据，比如你的银行卡号和密码，信用卡号有效期和安全码
-              </n-p>
+              <n-p depth="3" style="margin: 8px 0 0 0"> 请上传包含Dockerfile的源代码压缩包 </n-p>
+            </n-upload-dragger>
+          </n-upload>
+        </n-tab-pane>
+        <n-tab-pane name="fromImage" tab="镜像文件">
+          <n-upload
+            ref="uploadFromImage"
+            directory-dnd
+            action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+            class="h-52"
+            :default-upload="false"
+          >
+            <n-upload-dragger>
+              <div>
+                <n-icon size="48" :depth="3">
+                  <archive-icon />
+                </n-icon>
+              </div>
+              <n-text style="font-size: 16px"> 点击或者拖动文件到该区域来上传 </n-text>
+              <n-p depth="3" style="margin: 8px 0 0 0"> 请上传镜像文件 </n-p>
             </n-upload-dragger>
           </n-upload>
         </n-tab-pane>
         <n-tab-pane name="fromCodeHub" tab="代码仓库地址"> 代码仓库地址 </n-tab-pane>
-        <n-tab-pane name="fromImage" tab="镜像文件"> 镜像文件 </n-tab-pane>
         <n-tab-pane name="fromPublicHub" tab="公共仓库"> 公共仓库 </n-tab-pane>
       </n-tabs>
       <template #footer>
@@ -85,8 +103,8 @@
 
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { NTag, NButton, NIcon, useMessage } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+import { NTag, NButton, NIcon, NTooltip, useMessage } from 'naive-ui'
+import type { DataTableColumns, UploadInst } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
@@ -96,8 +114,10 @@ import {
 } from '@vicons/ionicons5'
 
 const showModal = ref(false)
-const curTab = ref('fromDockerfile')
+const curTab = ref('fromdockerfile')
 const dockerfile = ref('')
+const uploadFromSource = ref<UploadInst | null>(null)
+const uploadFromImage = ref<UploadInst | null>(null)
 const handleTabUpdate = (tab: string) => {
   curTab.value = tab
 }
@@ -109,6 +129,18 @@ const closeModal = () => {
 }
 const createImage = () => {
   showModal.value = false
+
+  if (curTab.value === 'fromSource') {
+    uploadFromSource.value?.submit()
+  } else if (curTab.value === 'fromImage') {
+    uploadFromImage.value?.submit()
+  } else if (curTab.value === 'fromCodeHub') {
+    console.log('fromCodeHub')
+  } else if (curTab.value === 'fromPublicHub') {
+    console.log('fromPublicHub')
+  } else {
+    console.log('fromDockerfile')
+  }
 
   dockerfile.value = ''
   curTab.value = 'fromDockerfile'
@@ -225,34 +257,67 @@ const columns: DataTableColumns<Image> = [
         },
         [
           h(
-            NButton,
+            NTooltip,
             {
-              size: 'large',
-              type: 'primary',
-              text: true,
-              onClick: () => sendMail(row)
+              trigger: 'hover',
+              delay: 500
             },
-            [h(NIcon, { size: 18 }, [h(PlayIcon)])]
+            {
+              default: () => '从镜像创建Pod',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'primary',
+                    text: true,
+                    onClick: () => sendMail(row)
+                  },
+                  [h(NIcon, { size: 18 }, [h(PlayIcon)])]
+                )
+            }
           ),
           h(
-            NButton,
+            NTooltip,
             {
-              size: 'large',
-              type: 'primary',
-              text: true,
-              onClick: () => sendMail(row)
+              trigger: 'hover',
+              delay: 500
             },
-            [h(NIcon, { size: 18 }, [h(EditIcon)])]
+            {
+              default: () => '修改镜像',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'primary',
+                    text: true,
+                    onClick: () => sendMail(row)
+                  },
+                  [h(NIcon, { size: 18 }, [h(EditIcon)])]
+                )
+            }
           ),
           h(
-            NButton,
+            NTooltip,
             {
-              size: 'large',
-              type: 'warning',
-              text: true,
-              onClick: () => sendMail(row)
+              trigger: 'hover',
+              delay: 500
             },
-            [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+            {
+              default: () => '删除镜像',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'warning',
+                    text: true,
+                    onClick: () => sendMail(row)
+                  },
+                  [h(NIcon, { size: 18 }, [h(DeleteIcon)])]
+                )
+            }
           )
         ]
       )
