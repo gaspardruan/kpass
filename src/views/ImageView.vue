@@ -1,18 +1,6 @@
 <template>
   <div class="py-3 w-4/5 mx-auto">
-    <div class="flex justify-between">
-      <div class="flex py-2" :style="{ fontFamily: 'en-title' }">
-        <n-gradient-text :size="32" type="success" class="font-bold leading-relaxed tracking-wide">
-          Image
-        </n-gradient-text>
-        <div class="text-gray-400 self-center ml-3">Image管理界面</div>
-      </div>
-      <n-button circle type="primary" class="py-2 self-center" @click="showModal = true">
-        <template #icon>
-          <n-icon size="24"><create-icon /></n-icon>
-        </template>
-      </n-button>
-    </div>
+    <table-header title="Image" @click="showModal = true" />
 
     <div :style="{ fontFamily: 'en-content' }">
       <n-tabs type="line" animated @update:value="handleTabUpdate">

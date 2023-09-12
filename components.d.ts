@@ -45,5 +45,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SimpleCreatePod: typeof import('./src/components/SimpleCreatePod.vue')['default']
+    TableHeader: typeof import('./src/components/TableHeader.vue')['default']
   }
 }
