@@ -1,6 +1,6 @@
 <template>
   <div class="py-3 w-4/5 mx-auto">
-    <table-header title="Pod" />
+    <table-header title="Pod" @click="showCreatePodModal = true" />
 
     <div :style="{ fontFamily: 'en-content' }">
       <n-tabs type="line" animated>
@@ -22,18 +22,19 @@
         </n-tab-pane>
       </n-tabs>
     </div>
+
+    <create-pod v-model:show="showCreatePodModal" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
-import {
-  SettingsSharp as EditIcon,
-  TrashBinSharp as DeleteIcon,
-  AddSharp as CreateIcon
-} from '@vicons/ionicons5'
+import { SettingsSharp as EditIcon, TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
+
+const showCreatePodModal = ref(false)
+
 const data: Pod[] = [
   {
     name: 'John Brown',

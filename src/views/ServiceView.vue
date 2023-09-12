@@ -12,11 +12,7 @@
 import { h } from 'vue'
 import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
-import {
-  SettingsSharp as EditIcon,
-  TrashBinSharp as DeleteIcon,
-  AddSharp as CreateIcon
-} from '@vicons/ionicons5'
+import { SettingsSharp as EditIcon, TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
 const data: Pod[] = [
   {
     name: 'John Brown',

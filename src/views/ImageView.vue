@@ -40,8 +40,7 @@ import type { DataTableColumns } from 'naive-ui'
 import {
   PlaySharp as PlayIcon,
   SettingsSharp as EditIcon,
-  TrashBinSharp as DeleteIcon,
-  AddSharp as CreateIcon
+  TrashBinSharp as DeleteIcon
 } from '@vicons/ionicons5'
 
 const curTab = ref('privateImage')
