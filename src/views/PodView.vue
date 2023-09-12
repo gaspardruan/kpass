@@ -32,14 +32,6 @@
             :pagination="pagination"
           />
         </n-tab-pane>
-        <n-tab-pane name="service" tab="Service">
-          <n-data-table
-            :single-line="false"
-            :columns="columns"
-            :data="data"
-            :pagination="pagination"
-          />
-        </n-tab-pane>
       </n-tabs>
     </div>
   </div>
