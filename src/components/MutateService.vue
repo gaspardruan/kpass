@@ -77,12 +77,8 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, toRaw } from 'vue'
-import { useMessage, useDialog } from 'naive-ui'
 import * as monaco from 'monaco-editor'
 import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution'
-
-const message = useMessage()
-const dialog = useDialog()
 
 const props = defineProps<{
   show: boolean
@@ -163,18 +159,6 @@ const rules = {
       return true
     }
   }
-}
-
-const handleDeleteService = (name: string) => {
-  dialog.warning({
-    title: '删除 Service',
-    content: '确定删除Service ' + name + ' 吗？',
-    positiveText: '确定',
-    negativeText: '取消',
-    onPositiveClick: () => {
-      message.success('删除Service: ' + name + '成功')
-    }
-  })
 }
 
 const editorRef = ref<HTMLElement | null>(null)
