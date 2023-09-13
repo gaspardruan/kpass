@@ -1,6 +1,6 @@
 <template>
   <div class="py-3 w-4/5 mx-auto">
-    <table-header title="Service" />
+    <table-header title="Service" @click="showCreateServiceModal = true" />
 
     <div class="py-4">
       <n-text type="info"> 节点IP：{{ nodeIP }} </n-text>
@@ -9,14 +9,24 @@
     <div :style="{ fontFamily: 'en-content' }">
       <n-data-table :single-line="false" :columns="columns" :data="data" :pagination="pagination" />
     </div>
+
+    <mutate-service v-model:show="showCreateServiceModal" type="create" />
+    <mutate-service
+      v-model:show="showUpdateServiceModal"
+      type="update"
+      :name="toUpdateServiceName"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
+import { NTag, NButton, NIcon, useMessage, NTooltip, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { SettingsSharp as EditIcon, TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
+
+const showCreateServiceModal = ref(false)
+const showUpdateServiceModal = ref(false)
 
 const nodeIP = ref('192.168.1.1')
 
@@ -35,9 +45,24 @@ const pagination = {
   pagination: 10
 }
 
+const toUpdateServiceName = ref('')
+const handleUpdateService = (name: string) => {
+  showUpdateServiceModal.value = true
+  toUpdateServiceName.value = name
+}
+
 const message = useMessage()
-const sendMail = (pod: Service) => {
-  message.info('send mail to ' + pod.name)
+const dialog = useDialog()
+const handleDeleteService = (name: string) => {
+  dialog.warning({
+    title: '删除 Service',
+    content: '确定删除Service ' + name + ' 吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      message.success('删除Service: ' + name + '成功')
+    }
+  })
 }
 
 const columns: DataTableColumns<Service> = [
@@ -116,7 +141,7 @@ const columns: DataTableColumns<Service> = [
                     size: 'large',
                     type: 'primary',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => handleUpdateService(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
@@ -138,7 +163,7 @@ const columns: DataTableColumns<Service> = [
                     size: 'large',
                     type: 'warning',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => handleDeleteService(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })

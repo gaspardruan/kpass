@@ -44,9 +44,7 @@
       </router-link>
     </div>
     <div class="flex-none w-32 flex justify-around">
-      <n-icon class="self-center text-gray-400" size="22">
-        <search-icon />
-      </n-icon>
+      <n-avatar round size="large" class="bg-gray-400 text-lg"> K </n-avatar>
     </div>
   </div>
 </template>
@@ -54,8 +52,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-
-import { Search as SearchIcon } from '@vicons/ionicons5'
 import BrandImg from '/kpass.svg'
 
 const route = useRoute()
