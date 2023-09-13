@@ -118,6 +118,7 @@ const cleanTab = () => {
 const closeModal = () => {
   cleanTab()
 }
+
 const createImage = () => {
   if (curTab.value === 'fromSource') {
     uploadFromSourceRef.value?.submit()

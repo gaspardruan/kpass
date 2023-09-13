@@ -11,7 +11,6 @@
     :closable="false"
   >
     <n-form
-      ref="formRef"
       :rules="rules"
       :model="createPod"
       label-placement="left"

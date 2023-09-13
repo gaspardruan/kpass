@@ -15,25 +15,50 @@
         <n-tab-pane name="deployment" tab="Deployment">
           <n-data-table
             :single-line="false"
-            :columns="columns"
-            :data="data"
+            :columns="deployColumns"
+            :data="deployData"
             :pagination="pagination"
           />
         </n-tab-pane>
       </n-tabs>
     </div>
 
-    <create-pod v-model:show="showCreatePodModal" />
+    <mutate-pod v-model:show="showCreatePodModal" type="create" />
+    <mutate-pod v-model:show="showUpdatePodModal" type="update" :podName="toUpdatePodName" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { h, ref } from 'vue'
-import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
+import { NTag, NButton, NIcon, useMessage, NTooltip, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { SettingsSharp as EditIcon, TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
 
+const message = useMessage()
+const dialog = useDialog()
+
 const showCreatePodModal = ref(false)
+const showUpdatePodModal = ref(false)
+
+const toUpdatePodName = ref('')
+const handleUpdatePod = (podName: string) => {
+  showUpdatePodModal.value = true
+  toUpdatePodName.value = podName
+}
+
+const handleDeletePod = (podName: string) => {
+  dialog.warning({
+    title: '删除Pod',
+    content: '确定删除Pod ' + podName + ' 吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      message.success('删除镜像' + podName + '成功')
+    }
+  })
+}
+
+const handleUpdateDeployment = () => {}
 
 const data: Pod[] = [
   {
@@ -58,14 +83,109 @@ const data: Pod[] = [
   }
 ]
 
+const deployData: Deployment[] = [
+  {
+    name: 'John Brown',
+    ready: '3/3',
+    upToDate: 3,
+    available: 3,
+    age: '3d'
+  }
+]
+
 const pagination = {
   pagination: 10
 }
 
-const message = useMessage()
-const sendMail = (pod: Pod) => {
-  message.info('send mail to ' + pod.name)
-}
+const deployColumns: DataTableColumns<Deployment> = [
+  {
+    title: 'Deployment名称',
+    key: 'name',
+    width: 150,
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '就绪',
+    key: 'ready',
+    width: 90
+  },
+  {
+    title: '最新',
+    key: 'upToDate',
+    width: 90
+  },
+  {
+    title: '可用',
+    key: 'available',
+    width: 90
+  },
+  {
+    title: '运行时长',
+    key: 'age',
+    width: 90
+  },
+  {
+    title: '操作',
+    key: 'actions',
+    width: 120,
+    render(row) {
+      return h(
+        'div',
+        {
+          class: 'flex justify-around w-24'
+        },
+        [
+          h(
+            NTooltip,
+            {
+              trigger: 'hover'
+            },
+            {
+              default: () => '修改Deployment',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'primary',
+                    text: true,
+                    onClick: () => handleUpdateDeployment()
+                  },
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
+                  }
+                )
+            }
+          ),
+          h(
+            NTooltip,
+            {
+              trigger: 'hover'
+            },
+            {
+              default: () => '删除Deployment',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'warning',
+                    text: true,
+                    onClick: () => handleDeletePod(row.name)
+                  },
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
+                  }
+                )
+            }
+          )
+        ]
+      )
+    }
+  }
+]
 
 const columns: DataTableColumns<Pod> = [
   {
@@ -161,7 +281,7 @@ const columns: DataTableColumns<Pod> = [
                     size: 'large',
                     type: 'primary',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => handleUpdatePod(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
@@ -183,7 +303,7 @@ const columns: DataTableColumns<Pod> = [
                     size: 'large',
                     type: 'warning',
                     text: true,
-                    onClick: () => sendMail(row)
+                    onClick: () => handleDeletePod(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
