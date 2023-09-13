@@ -5,14 +5,14 @@
     preset="card"
     :mask-closable="false"
     :style="{ width: '600px', height: '500px' }"
-    :title="title + ` Pod`"
+    :title="action + ' ' + title"
     size="huge"
     :bordered="false"
     :closable="false"
     display-directive="show"
   >
     <n-tabs type="line" animated @update:value="handleTabUpdate" v-model:value="curTab">
-      <n-tab-pane name="fromImage" :tab="`选择镜像` + title">
+      <n-tab-pane name="fromImage" :tab="`选择镜像` + action" v-if="target != 'deploy'">
         <n-form
           :rules="rules"
           :model="podModel"
@@ -52,7 +52,10 @@
           </n-form-item>
         </n-form>
       </n-tab-pane>
-      <n-tab-pane name="fromYAML" :tab="`从YAML文件` + title" display-directive="show">
+      <n-tab-pane name="fromDeploy" :tab="action + ` Deployment`" v-if="target != 'pod'">
+        Deployment名称： {{ deployName }}</n-tab-pane
+      >
+      <n-tab-pane name="fromYAML" :tab="`从 YAML 文件` + action" display-directive="show">
         <div ref="editorRef" class="h-64"></div>
       </n-tab-pane>
     </n-tabs>
@@ -71,7 +74,13 @@ import { Search as SearchIcon } from '@vicons/ionicons5'
 import * as monaco from 'monaco-editor'
 import 'monaco-editor/esm/vs/basic-languages/yaml/yaml.contribution'
 
-const props = defineProps<{ show: boolean; type: 'create' | 'update'; podName?: string }>()
+const props = defineProps<{
+  show: boolean
+  type: 'create' | 'update'
+  podName?: string
+  deployName?: string
+  target: string
+}>()
 const emit = defineEmits(['update:show'])
 
 const podModel = ref<CreatePodV2>({
@@ -101,7 +110,7 @@ const rules = {
   }
 }
 
-const title = computed(() => {
+const action = computed(() => {
   if (props.type === 'create') {
     return '创建'
   } else {
@@ -109,12 +118,24 @@ const title = computed(() => {
   }
 })
 
+const title = computed(() => {
+  if (props.target === 'pod') {
+    return 'Pod'
+  } else {
+    return 'Deployment'
+  }
+})
+
+const initTab = () => {
+  return props.target === 'pod' ? 'fromImage' : 'fromDeploy'
+}
+
 const showModal = computed({
   get: () => props.show,
   set: (val) => emit('update:show', val)
 })
 
-const curTab = ref('fromImage')
+const curTab = ref(initTab())
 const handleTabUpdate = (tab: string) => {
   curTab.value = tab
 }
@@ -164,7 +185,7 @@ const cleanTab = () => {
   if (props.type === 'create') podModel.value.podName = ''
   podModel.value.podPort = null
   setContent('')
-  curTab.value = 'fromImage'
+  curTab.value = initTab()
   showModal.value = false
 }
 

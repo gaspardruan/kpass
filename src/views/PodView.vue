@@ -23,8 +23,19 @@
       </n-tabs>
     </div>
 
-    <mutate-pod v-model:show="showCreatePodModal" type="create" />
-    <mutate-pod v-model:show="showUpdatePodModal" type="update" :podName="toUpdatePodName" />
+    <mutate-pod v-model:show="showCreatePodModal" type="create" target="both" />
+    <mutate-pod
+      v-model:show="showUpdatePodModal"
+      type="update"
+      :podName="toUpdatePodName"
+      target="pod"
+    />
+    <mutate-pod
+      v-model:show="showUpdateDeployModal"
+      type="update"
+      :deployName="toUpdateDeployName"
+      target="deploy"
+    />
   </div>
 </template>
 
@@ -39,6 +50,7 @@ const dialog = useDialog()
 
 const showCreatePodModal = ref(false)
 const showUpdatePodModal = ref(false)
+const showUpdateDeployModal = ref(false)
 
 const toUpdatePodName = ref('')
 const handleUpdatePod = (podName: string) => {
@@ -46,19 +58,35 @@ const handleUpdatePod = (podName: string) => {
   toUpdatePodName.value = podName
 }
 
+const toUpdateDeployName = ref('')
+const handleUpdateDeploy = (deployName: string) => {
+  showUpdateDeployModal.value = true
+  toUpdateDeployName.value = deployName
+}
+
 const handleDeletePod = (podName: string) => {
   dialog.warning({
-    title: '删除Pod',
+    title: '删除 Pod',
     content: '确定删除Pod ' + podName + ' 吗？',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
-      message.success('删除镜像' + podName + '成功')
+      message.success('删除Pod: ' + podName + '成功')
     }
   })
 }
 
-const handleUpdateDeployment = () => {}
+const handleDeleteDeploy = (podName: string) => {
+  dialog.warning({
+    title: '删除 Deployment',
+    content: '确定删除Deployment: ' + podName + ' 吗？',
+    positiveText: '确定',
+    negativeText: '取消',
+    onPositiveClick: () => {
+      message.success('删除Deployment: ' + podName + '成功')
+    }
+  })
+}
 
 const data: Pod[] = [
   {
@@ -151,7 +179,7 @@ const deployColumns: DataTableColumns<Deployment> = [
                     size: 'large',
                     type: 'primary',
                     text: true,
-                    onClick: () => handleUpdateDeployment()
+                    onClick: () => handleUpdateDeploy(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
@@ -173,7 +201,7 @@ const deployColumns: DataTableColumns<Deployment> = [
                     size: 'large',
                     type: 'warning',
                     text: true,
-                    onClick: () => handleDeletePod(row.name)
+                    onClick: () => handleDeleteDeploy(row.name)
                   },
                   {
                     default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
