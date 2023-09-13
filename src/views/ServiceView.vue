@@ -2,6 +2,10 @@
   <div class="py-3 w-4/5 mx-auto">
     <table-header title="Service" />
 
+    <div class="py-4">
+      <n-text type="info"> 节点IP：{{ nodeIP }} </n-text>
+    </div>
+
     <div :style="{ fontFamily: 'en-content' }">
       <n-data-table :single-line="false" :columns="columns" :data="data" :pagination="pagination" />
     </div>
@@ -9,30 +13,21 @@
 </template>
 
 <script setup lang="ts">
-import { h } from 'vue'
+import { h, ref } from 'vue'
 import { NTag, NButton, NIcon, useMessage, NTooltip } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import { SettingsSharp as EditIcon, TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
-const data: Pod[] = [
+
+const nodeIP = ref('192.168.1.1')
+
+const data: Service[] = [
   {
-    name: 'John Brown',
-    ready: '100/100',
-    status: 'running',
-    restarts: 0,
-    age: '3d',
-    ip: '192.168.137.1',
-    node: 'node1',
-    tags: []
-  },
-  {
-    name: 'John Brown2',
-    ready: '100/100',
-    status: 'exited(137)',
-    restarts: 0,
-    age: '3d',
-    ip: '192.168.137.123',
-    node: 'node1',
-    tags: []
+    name: 'nginx-service',
+    type: 'ClusterIP',
+    clusterIP: '192.168.137.1',
+    externalIP: '-',
+    ports: ['80:30080/TCP'],
+    age: '1d'
   }
 ]
 
@@ -41,13 +36,13 @@ const pagination = {
 }
 
 const message = useMessage()
-const sendMail = (pod: Pod) => {
+const sendMail = (pod: Service) => {
   message.info('send mail to ' + pod.name)
 }
 
-const columns: DataTableColumns<Pod> = [
+const columns: DataTableColumns<Service> = [
   {
-    title: 'Pod名称',
+    title: 'Service名称',
     key: 'name',
     width: 150,
     ellipsis: {
@@ -55,19 +50,19 @@ const columns: DataTableColumns<Pod> = [
     }
   },
   {
-    title: '就绪',
-    key: 'ready',
+    title: '类型',
+    key: 'type',
     width: 90
   },
   {
-    title: '状态',
-    key: 'status',
-    width: 90
+    title: '集群IP',
+    key: 'clusterIP',
+    width: 120
   },
   {
-    title: '重启',
-    key: 'restarts',
-    width: 90
+    title: '外部IP',
+    key: 'externalIP',
+    width: 120
   },
   {
     title: '运行时长',
@@ -75,28 +70,10 @@ const columns: DataTableColumns<Pod> = [
     width: 90
   },
   {
-    title: 'IP',
-    key: 'ip',
-    width: 120,
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '节点',
-    key: 'node',
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '标签',
-    key: 'tags',
-    ellipsis: {
-      tooltip: true
-    },
+    title: '端口',
+    key: 'ports',
     render(row) {
-      const tags = row.tags.map((tagKey) => {
+      const tags = row.ports.map((port) => {
         return h(
           NTag,
           {
@@ -107,7 +84,7 @@ const columns: DataTableColumns<Pod> = [
             bordered: false
           },
           {
-            default: () => tagKey
+            default: () => port
           }
         )
       })
