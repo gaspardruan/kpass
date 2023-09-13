@@ -4,7 +4,7 @@
     class="custom-card"
     preset="card"
     :mask-closable="false"
-    :style="{ width: '500px', height: '400px' }"
+    :style="{ width: '500px', height: '500px' }"
     title="从镜像创建Pod"
     size="huge"
     :bordered="false"
@@ -36,6 +36,9 @@
           placeholder="端口"
         />
       </n-form-item>
+      <n-form-item label="标签" path="labels">
+        <n-dynamic-tags v-model:value="createPod.labels" />
+      </n-form-item>
     </n-form>
     <template #footer>
       <div class="flex w-32 mx-auto justify-between">
@@ -61,7 +64,8 @@ const createPod = ref<CreatePod>({
   imageID: props.imageID,
   imageName: props.imageName,
   podName: '',
-  podPort: null
+  podPort: null,
+  labels: []
 })
 
 watch([() => props.imageID, () => props.imageName], () => {
@@ -90,10 +94,12 @@ const cleanPodModal = () => {
   showCreatePodModal.value = false
   createPod.value.podName = ''
   createPod.value.podPort = null
+  createPod.value.labels = []
 }
 
 const handleCreatePod = () => {
   console.log(createPod.value)
+  console.log(createPod.value.labels)
   cleanPodModal()
 }
 

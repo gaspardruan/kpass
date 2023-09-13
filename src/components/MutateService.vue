@@ -117,7 +117,7 @@ const serviceModel = ref<CreateService>({
   type: '',
   port: 0,
   targetPort: 0,
-  selector: ['kkk:hahaha']
+  selector: []
 })
 
 const serviceTypeList = [

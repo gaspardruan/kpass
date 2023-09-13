@@ -50,6 +50,9 @@
               placeholder="端口"
             />
           </n-form-item>
+          <n-form-item label="标签" path="labels">
+            <n-dynamic-tags v-model:value="podModel.labels" />
+          </n-form-item>
         </n-form>
       </n-tab-pane>
       <n-tab-pane name="fromDeploy" :tab="action + ` Deployment`" v-if="target != 'pod'">
@@ -86,7 +89,8 @@ const emit = defineEmits(['update:show'])
 const podModel = ref<CreatePodV2>({
   imageName: '',
   podName: props.type === 'update' && props.podName ? props.podName : '',
-  podPort: null
+  podPort: null,
+  labels: []
 })
 
 watch(
@@ -127,7 +131,7 @@ const title = computed(() => {
 })
 
 const initTab = () => {
-  return props.target === 'pod' ? 'fromImage' : 'fromDeploy'
+  return props.target != 'deploy' ? 'fromImage' : 'fromDeploy'
 }
 
 const showModal = computed({
@@ -184,6 +188,7 @@ const cleanTab = () => {
   podModel.value.imageName = ''
   if (props.type === 'create') podModel.value.podName = ''
   podModel.value.podPort = null
+  podModel.value.labels = []
   setContent('')
   curTab.value = initTab()
   showModal.value = false
@@ -206,6 +211,7 @@ const setContent = (content: string) => {
 const createPod = () => {
   if (curTab.value === 'fromImage') {
     console.log(podModel.value)
+    console.log(podModel.value.labels)
   } else {
     if (yamlEditor.value) {
       console.log(getContent())

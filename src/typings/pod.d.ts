@@ -14,12 +14,14 @@ interface CreatePod {
   imageName: string
   podName: string
   podPort: number | null
+  labels: string[]
 }
 
 interface CreatePodV2 {
   imageName: string
   podName: string
   podPort: number | null
+  labels: string[]
 }
 
 interface Deployment {

@@ -97,7 +97,7 @@ const data: Pod[] = [
     age: '3d',
     ip: '192.168.137.1',
     node: 'node1',
-    tags: []
+    tags: ['kkk:hahaha']
   },
   {
     name: 'John Brown2',
@@ -107,7 +107,7 @@ const data: Pod[] = [
     age: '3d',
     ip: '192.168.137.123',
     node: 'node1',
-    tags: []
+    tags: ['aaa:bbbb']
   }
 ]
 
@@ -262,9 +262,6 @@ const columns: DataTableColumns<Pod> = [
   {
     title: '标签',
     key: 'tags',
-    ellipsis: {
-      tooltip: true
-    },
     render(row) {
       const tags = row.tags.map((tagKey) => {
         return h(
