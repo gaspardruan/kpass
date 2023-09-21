@@ -13,6 +13,10 @@ const useImageStore = defineStore('image', () => {
     publicImage.value.forEach((image) => {
       list1.value.push({ label: image.imageName, value: image.imageName })
     })
+    const index = list1.value.findIndex((item) => item.label == 'nginx:latest')
+    if (index == -1) {
+      list1.value.push({ label: 'nginx:latest', value: 'nginx:latest' })
+    }
     privateImage.value.forEach((image) => {
       list2.value.push({ label: image.imageName, value: image.imageName })
     })
@@ -41,10 +45,7 @@ const useImageStore = defineStore('image', () => {
   }
 
   function removeImageById(imageId: string) {
-    const index = publicImage.value.findIndex((image) => image.imageId === imageId)
-    if (index !== -1) {
-      publicImage.value.splice(index, 1)
-    }
+    privateImage.value = privateImage.value.filter((image) => image.id != imageId)
   }
 
   return {

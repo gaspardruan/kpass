@@ -7,7 +7,7 @@
         <n-tab-pane name="privateImage" tab="私有镜像">
           <n-data-table
             :single-line="false"
-            :columns="columns"
+            :columns="privateColumns"
             :data="imageStore.privateImage"
             :pagination="pagination"
           />
@@ -15,7 +15,7 @@
         <n-tab-pane name="publicImage" tab="公共镜像">
           <n-data-table
             :single-line="false"
-            :columns="columns"
+            :columns="publicColumns"
             :data="imageStore.publicImage"
             :pagination="pagination"
           />
@@ -37,11 +37,7 @@
 import { h, ref } from 'vue'
 import { NTag, NButton, NIcon, NTooltip, useMessage, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
-import {
-  PlaySharp as PlayIcon,
-  SettingsSharp as EditIcon,
-  TrashBinSharp as DeleteIcon
-} from '@vicons/ionicons5'
+import { TrashBinSharp as DeleteIcon } from '@vicons/ionicons5'
 
 import { deleteImage } from '@/api/image'
 import useImageStore from '@/stores/image'
@@ -99,7 +95,7 @@ const normalSize = (size: number) => {
   }
 }
 
-const columns: DataTableColumns<Image> = [
+const privateColumns: DataTableColumns<Image> = [
   {
     title: '镜像ID',
     key: 'id',
@@ -183,81 +179,92 @@ const columns: DataTableColumns<Image> = [
               delay: 500
             },
             {
-              default: () => '从镜像创建Pod',
+              default: () => '删除镜像',
               trigger: () =>
                 h(
                   NButton,
                   {
                     size: 'large',
-                    type: 'primary',
+                    type: 'warning',
                     text: true,
-                    onClick: () => {
-                      showCreatePodModal.value = true
-                      imageID.value = row.id
-                      imageName.value = row.imageName
-                    }
+                    onClick: () => handleDeleteImage(row.id, row.imageName)
                   },
                   {
-                    default: () => h(NIcon, { size: 18 }, { default: () => h(PlayIcon) })
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
                   }
                 )
             }
-          ),
-          curTab.value === 'privateImage'
-            ? h(
-                NTooltip,
-                {
-                  trigger: 'hover',
-                  delay: 500
-                },
-                {
-                  default: () => '修改镜像',
-                  trigger: () =>
-                    h(
-                      NButton,
-                      {
-                        size: 'large',
-                        type: 'primary',
-                        text: true,
-                        onClick: () => {
-                          showModifyPodModal.value = true
-                          modifyImageName.value = row.imageName
-                        }
-                      },
-                      {
-                        default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
-                      }
-                    )
-                }
-              )
-            : null,
-          curTab.value === 'privateImage'
-            ? h(
-                NTooltip,
-                {
-                  trigger: 'hover',
-                  delay: 500
-                },
-                {
-                  default: () => '删除镜像',
-                  trigger: () =>
-                    h(
-                      NButton,
-                      {
-                        size: 'large',
-                        type: 'warning',
-                        text: true,
-                        onClick: () => handleDeleteImage(row.id, row.imageName)
-                      },
-                      {
-                        default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })
-                      }
-                    )
-                }
-              )
-            : null
+          )
         ]
       )
+    }
+  }
+]
+
+const publicColumns: DataTableColumns<Image> = [
+  {
+    title: '镜像ID',
+    key: 'id',
+    width: 200,
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '镜像名称',
+    key: 'imageName',
+    ellipsis: {
+      tooltip: true
+    }
+  },
+  {
+    title: '镜像标签',
+    key: 'labels',
+
+    ellipsis: {
+      tooltip: true
+    },
+    render(row) {
+      if (row.labels === null) return null
+      let tags = []
+      for (let item of Object.entries(row.labels)) {
+        tags.push(
+          h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px'
+              },
+              type: 'info',
+              bordered: false
+            },
+            {
+              default: () => item[0] + ':' + item[1]
+            }
+          )
+        )
+      }
+      return tags
+    }
+  },
+  {
+    title: '镜像大小',
+    key: 'size',
+    width: 85,
+    render: (row) => {
+      return normalSize(row.size)
+    }
+  },
+  {
+    title: '创建时间',
+    key: 'createdTime',
+    width: 150,
+    ellipsis: {
+      tooltip: true
+    },
+    render: (row) => {
+      const date = new Date(row.createTime * 1000)
+      return date.toLocaleString()
     }
   }
 ]
