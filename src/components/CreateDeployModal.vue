@@ -28,7 +28,7 @@
         <n-select
           filterable
           placeholder="选择镜像"
-          :options="imageNameList"
+          :options="imageStore.publicImageNames"
           v-model:value="createDeployModel.image"
         >
           <template #arrow>
@@ -78,6 +78,9 @@ import { computed, ref } from 'vue'
 import { Search as SearchIcon } from '@vicons/ionicons5'
 import { useMessage } from 'naive-ui'
 import { createDeploy } from '@/api/pod'
+
+import useImageStore from '@/stores/image'
+const imageStore = useImageStore()
 
 const message = useMessage()
 

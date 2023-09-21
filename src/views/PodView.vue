@@ -24,18 +24,12 @@
     </div>
 
     <create-deploy-modal v-model:show="showCreateDeployModal" @deployCreated="reloadData" />
-    <mutate-pod
-      v-model:show="showUpdatePodModal"
-      type="update"
-      :podName="toUpdatePodName"
-      target="pod"
-    />
-    <mutate-pod
+    <update-deploy-modal
       v-model:show="showUpdateDeployModal"
-      type="update"
-      :deployName="toUpdateDeployName"
-      target="deploy"
+      :deploymentName="toUpdateDeployName"
+      @deployUpdated="reloadData"
     />
+
     <expose-pod-modal v-model:show="showExposePodModal" :podName="exposePodName" />
   </div>
 </template>
@@ -58,15 +52,8 @@ const message = useMessage()
 const dialog = useDialog()
 
 const showCreateDeployModal = ref(false)
-const showUpdatePodModal = ref(false)
 const showUpdateDeployModal = ref(false)
 const showExposePodModal = ref(false)
-
-const toUpdatePodName = ref('')
-const handleUpdatePod = (podName: string) => {
-  showUpdatePodModal.value = true
-  toUpdatePodName.value = podName
-}
 
 const exposePodName = ref('')
 const handleExposePod = (podName: string) => {
@@ -147,12 +134,14 @@ onMounted(() => {
 })
 
 const reloadData = () => {
-  getPodList().then((res) => {
-    data.value = res.data.podInfoList
-  })
-  getDeployList().then((res) => {
-    deployData.value = res.data.deploymentListInfoList
-  })
+  setTimeout(() => {
+    getPodList().then((res) => {
+      data.value = res.data.podInfoList
+    })
+    getDeployList().then((res) => {
+      deployData.value = res.data.deploymentListInfoList
+    })
+  }, 100)
 }
 
 const pagination = {
@@ -340,28 +329,6 @@ const columns: DataTableColumns<Pod2> = [
           class: 'flex justify-around w-24'
         },
         [
-          h(
-            NTooltip,
-            {
-              trigger: 'hover'
-            },
-            {
-              default: () => '修改Pod',
-              trigger: () =>
-                h(
-                  NButton,
-                  {
-                    size: 'large',
-                    type: 'primary',
-                    text: true,
-                    onClick: () => handleUpdatePod(row.name)
-                  },
-                  {
-                    default: () => h(NIcon, { size: 18 }, { default: () => h(EditIcon) })
-                  }
-                )
-            }
-          ),
           h(
             NTooltip,
             {

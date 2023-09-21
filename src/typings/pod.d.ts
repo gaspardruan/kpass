@@ -40,6 +40,11 @@ interface CreateDeployForm {
   userId: string
 }
 
+interface UpdateDeployForm {
+  deploymentName: string
+  imageName: string
+}
+
 interface Deployment {
   name: string
   availableReplicas: number

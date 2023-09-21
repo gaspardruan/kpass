@@ -25,3 +25,9 @@ export const createDeploy = (data: CreateDeployForm) => {
     `/create/deployment?name=${data.name}&image=${data.image}&port=${data.port}&envVars=${data.envVars}&labels=${data.labels}&userId=${data.userId}`
   )
 }
+
+export const updateDeploy = (data: UpdateDeployForm) => {
+  return backend.post(
+    `/update/deployment/image?deploymentName=${data.deploymentName}&imageName=${data.imageName}`
+  )
+}

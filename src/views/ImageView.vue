@@ -8,7 +8,7 @@
           <n-data-table
             :single-line="false"
             :columns="columns"
-            :data="privateData"
+            :data="imageStore.privateImage"
             :pagination="pagination"
           />
         </n-tab-pane>
@@ -16,7 +16,7 @@
           <n-data-table
             :single-line="false"
             :columns="columns"
-            :data="publicData"
+            :data="imageStore.publicImage"
             :pagination="pagination"
           />
         </n-tab-pane>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref, onMounted } from 'vue'
+import { h, ref } from 'vue'
 import { NTag, NButton, NIcon, NTooltip, useMessage, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import {
@@ -43,10 +43,8 @@ import {
   TrashBinSharp as DeleteIcon
 } from '@vicons/ionicons5'
 
-import { getPublicImageList, getUserImageList } from '@/api/image'
-import useUserStore from '@/stores/user'
-
-const userStore = useUserStore()
+import useImageStore from '@/stores/image'
+const imageStore = useImageStore()
 
 const curTab = ref('privateImage')
 const handleTabUpdate = (tab: string) => {
@@ -61,26 +59,6 @@ const imageID = ref('')
 const imageName = ref('')
 
 const modifyImageName = ref('')
-
-const publicData = ref<Image[]>([
-  {
-    id: '',
-    imageName: '',
-    size: 0,
-    labels: [],
-    createTime: 0
-  }
-])
-
-const privateData = ref<Image[]>([
-  {
-    id: '',
-    imageName: '',
-    size: 0,
-    labels: [],
-    createTime: 0
-  }
-])
 
 const pagination = {
   pageSize: 5
@@ -111,16 +89,6 @@ const normalSize = (size: number) => {
     ;(size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
   }
 }
-
-onMounted(() => {
-  getPublicImageList().then((res) => {
-    publicData.value = res.data.infoList
-  })
-
-  getUserImageList(userStore.userId).then((res) => {
-    privateData.value = res.data.infoList
-  })
-})
 
 const columns: DataTableColumns<Image> = [
   {
