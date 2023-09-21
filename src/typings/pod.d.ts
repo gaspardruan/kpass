@@ -9,6 +9,13 @@ interface Pod {
   tags: string[]
 }
 
+interface Pod2 {
+  name: string
+  ready: boolean
+  ip: string
+  labels: object
+}
+
 interface CreatePod {
   imageID: string
   imageName: string

@@ -73,7 +73,8 @@ const rules = {
     required: true
   },
   podPort: {
-    type: 'number'
+    type: 'number',
+    required: true
   }
 }
 

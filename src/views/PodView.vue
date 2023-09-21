@@ -47,10 +47,12 @@ import type { DataTableColumns } from 'naive-ui'
 import {
   SettingsSharp as EditIcon,
   TrashBinSharp as DeleteIcon,
-  OpenSharp as PortIcon
+  OpenSharp as PortIcon,
+  CheckmarkSharp as ReadyIcon,
+  CloseSharp as UnreadyIcon
 } from '@vicons/ionicons5'
 
-import { getDeployList } from '@/api/pod'
+import { getDeployList, getPodList } from '@/api/pod'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -102,28 +104,14 @@ const handleDeleteDeploy = (podName: string) => {
   })
 }
 
-const data: Pod[] = [
+const data = ref<Pod2[]>([
   {
     name: 'John Brown',
-    ready: '100/100',
-    status: 'running',
-    restarts: 0,
-    age: '3d',
-    ip: '192.168.137.1',
-    node: 'node1',
-    tags: ['kkk:hahaha']
-  },
-  {
-    name: 'John Brown2',
-    ready: '100/100',
-    status: 'exited(137)',
-    restarts: 0,
-    age: '3d',
-    ip: '192.168.137.123',
-    node: 'node1',
-    tags: ['aaa:bbbb']
+    ready: false,
+    ip: '',
+    labels: {}
   }
-]
+])
 
 const deployData = ref<Deployment[]>([
   {
@@ -136,6 +124,9 @@ const deployData = ref<Deployment[]>([
 ])
 
 onMounted(() => {
+  getPodList().then((res) => {
+    data.value = res.data.podInfoList
+  })
   getDeployList().then((res) => {
     deployData.value = res.data.deploymentListInfoList
   })
@@ -263,7 +254,7 @@ const deployColumns: DataTableColumns<Deployment> = [
   }
 ]
 
-const columns: DataTableColumns<Pod> = [
+const columns: DataTableColumns<Pod2> = [
   {
     title: 'Pod名称',
     key: 'name',
@@ -275,34 +266,16 @@ const columns: DataTableColumns<Pod> = [
   {
     title: '就绪',
     key: 'ready',
-    width: 90
-  },
-  {
-    title: '状态',
-    key: 'status',
-    width: 95
-  },
-  {
-    title: '重启',
-    key: 'restarts',
-    width: 90
-  },
-  {
-    title: '运行时长',
-    key: 'age',
-    width: 90
+    width: 60,
+    render(row) {
+      if (row.ready) return h(NIcon, { size: 18, color: 'green' }, { default: () => h(ReadyIcon) })
+      return h(NIcon, { size: 18, color: 'red' }, { default: () => h(UnreadyIcon) })
+    }
   },
   {
     title: 'IP',
     key: 'ip',
-    width: 120,
-    ellipsis: {
-      tooltip: true
-    }
-  },
-  {
-    title: '节点',
-    key: 'node',
+    width: 130,
     ellipsis: {
       tooltip: true
     }
@@ -311,21 +284,25 @@ const columns: DataTableColumns<Pod> = [
     title: '标签',
     key: 'tags',
     render(row) {
-      const tags = row.tags.map((tagKey) => {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: '6px'
+      if (row.labels === null) return null
+      let tags = []
+      for (let item of Object.entries(row.labels)) {
+        tags.push(
+          h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px'
+              },
+              type: 'info',
+              bordered: false
             },
-            type: 'info',
-            bordered: false
-          },
-          {
-            default: () => tagKey
-          }
+            {
+              default: () => item[0] + ':' + item[1]
+            }
+          )
         )
-      })
+      }
       return tags
     }
   },
