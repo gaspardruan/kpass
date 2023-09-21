@@ -29,7 +29,7 @@
         <n-select
           filterable
           placeholder="选择镜像"
-          :options="imageStore.publicImageNames"
+          :options="imageStore.imageNameList"
           v-model:value="updateDeployModel.imageName"
         >
           <template #arrow>
@@ -78,25 +78,6 @@ watch(
     updateDeployModel.value.deploymentName = props.deploymentName
   }
 )
-
-const imageNameList = [
-  {
-    label: 'nginx',
-    value: 'nginx'
-  },
-  {
-    label: 'wordpress',
-    value: 'wordpress'
-  },
-  {
-    label: 'redis',
-    value: 'redis'
-  },
-  {
-    label: 'mysql',
-    value: 'mysql:latest'
-  }
-]
 
 const rules = {
   deploymentName: {

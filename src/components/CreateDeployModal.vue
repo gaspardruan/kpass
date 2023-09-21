@@ -28,7 +28,7 @@
         <n-select
           filterable
           placeholder="选择镜像"
-          :options="imageStore.publicImageNames"
+          :options="imageStore.imageNameList"
           v-model:value="createDeployModel.image"
         >
           <template #arrow>
@@ -121,25 +121,6 @@ const showModal = computed({
   get: () => props.show,
   set: (val) => emit('update:show', val)
 })
-
-const imageNameList = [
-  {
-    label: 'nginx',
-    value: 'nginx'
-  },
-  {
-    label: 'wordpress',
-    value: 'wordpress'
-  },
-  {
-    label: 'redis',
-    value: 'redis'
-  },
-  {
-    label: 'mysql',
-    value: 'mysql:latest'
-  }
-]
 
 const cleanModal = () => {
   createDeployModel.value.image = ''

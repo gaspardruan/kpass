@@ -1,24 +1,35 @@
 import { computed, ref } from 'vue'
+import type { SelectGroupOption } from 'naive-ui'
 import { defineStore } from 'pinia'
 
 const useImageStore = defineStore('image', () => {
   const publicImage = ref<Image[]>([])
   const privateImage = ref<Image[]>([])
 
-  const publicImageNames = computed(() => {
-    const list = ref<{ label: string; value: string }[]>([])
+  const imageNameList = computed(() => {
+    const options = ref<Array<SelectGroupOption>>([])
+    const list1 = ref<{ label: string; value: string }[]>([])
+    const list2 = ref<{ label: string; value: string }[]>([])
     publicImage.value.forEach((image) => {
-      list.value.push({ label: image.imageName, value: image.imageName })
+      list1.value.push({ label: image.imageName, value: image.imageName })
     })
-    return list.value
-  })
-
-  const privateImageNames = computed(() => {
-    const list = ref<{ label: string; value: string }[]>([])
     privateImage.value.forEach((image) => {
-      list.value.push({ label: image.imageName, value: image.imageName })
+      list2.value.push({ label: image.imageName, value: image.imageName })
     })
-    return list
+
+    options.value.push(
+      {
+        type: 'group',
+        label: '公有镜像',
+        children: list1.value
+      },
+      {
+        type: 'group',
+        label: '私有镜像',
+        children: list2.value
+      }
+    )
+    return options.value
   })
 
   function setPublicImage(images: Image[]) {
@@ -32,8 +43,8 @@ const useImageStore = defineStore('image', () => {
   return {
     publicImage,
     privateImage,
-    publicImageNames,
-    privateImageNames,
+
+    imageNameList,
     setPublicImage,
     setPrivateImage
   }
