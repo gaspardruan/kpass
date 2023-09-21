@@ -5,7 +5,7 @@
     preset="card"
     :mask-closable="false"
     :style="{ width: '500px', height: '400px' }"
-    title="通过Dockerfile修改Pod"
+    title="通过Dockerfile修改Image"
     size="huge"
     :bordered="false"
     :closable="false"

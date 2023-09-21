@@ -26,8 +26,13 @@ interface CreatePodV2 {
 
 interface Deployment {
   name: string
-  ready: string
-  upToDate: number
-  available: number
-  age: string
+  availableReplicas: number
+  unavailableReplicas: number
+  creationTime: string
+  labels: object
+}
+
+interface ExposePod {
+  podName: string
+  podPort: number | null
 }

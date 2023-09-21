@@ -1,7 +1,7 @@
 interface Image {
   id: string
-  name: string
+  imageName: string
   size: number
-  tags: string[]
-  createdAt: string
+  labels: string[]
+  createTime: number
 }

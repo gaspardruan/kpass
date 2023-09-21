@@ -8,7 +8,7 @@
           <n-data-table
             :single-line="false"
             :columns="columns"
-            :data="data"
+            :data="privateData"
             :pagination="pagination"
           />
         </n-tab-pane>
@@ -16,7 +16,7 @@
           <n-data-table
             :single-line="false"
             :columns="columns"
-            :data="data"
+            :data="publicData"
             :pagination="pagination"
           />
         </n-tab-pane>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { h, ref } from 'vue'
+import { h, ref, onMounted } from 'vue'
 import { NTag, NButton, NIcon, NTooltip, useMessage, useDialog } from 'naive-ui'
 import type { DataTableColumns } from 'naive-ui'
 import {
@@ -42,6 +42,11 @@ import {
   SettingsSharp as EditIcon,
   TrashBinSharp as DeleteIcon
 } from '@vicons/ionicons5'
+
+import { getPublicImageList, getUserImageList } from '@/api/image'
+import useUserStore from '@/stores/user'
+
+const userStore = useUserStore()
 
 const curTab = ref('privateImage')
 const handleTabUpdate = (tab: string) => {
@@ -57,32 +62,28 @@ const imageName = ref('')
 
 const modifyImageName = ref('')
 
-const data: Image[] = [
+const publicData = ref<Image[]>([
   {
-    id: '784414112576',
-    name: 'John Brown',
-    size: 1024,
-    tags: ['nice', 'developer'],
-    createdAt: '2021-09-01 12:00:00'
-  },
-  {
-    id: '1',
-    name: 'Jim Green',
-    size: 1023,
-    tags: ['wow'],
-    createdAt: '2021-09-01 12:00:00'
-  },
-  {
-    id: '2',
-    name: 'Joe Black',
-    size: 32,
-    tags: ['cool', 'teacher'],
-    createdAt: '2021-09-01 12:00:00'
+    id: '',
+    imageName: '',
+    size: 0,
+    labels: [],
+    createTime: 0
   }
-]
+])
+
+const privateData = ref<Image[]>([
+  {
+    id: '',
+    imageName: '',
+    size: 0,
+    labels: [],
+    createTime: 0
+  }
+])
 
 const pagination = {
-  pagination: 10
+  pageSize: 5
 }
 
 const message = useMessage()
@@ -101,37 +102,52 @@ const handleDeleteImage = (imageID: string, imageName: string) => {
 
 const normalSize = (size: number) => {
   if (size < 1024) {
-    return size + 'MB'
+    return size + 'B'
+  } else if (size < 1024 * 1024) {
+    return (size / 1024).toFixed(2) + 'KB'
+  } else if (size < 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024).toFixed(2) + 'MB'
   } else {
-    return (size / 1024).toFixed(2) + 'GB'
+    ;(size / 1024 / 1024 / 1024).toFixed(2) + 'GB'
   }
 }
+
+onMounted(() => {
+  getPublicImageList().then((res) => {
+    publicData.value = res.data.infoList
+  })
+
+  getUserImageList(userStore.userId).then((res) => {
+    privateData.value = res.data.infoList
+  })
+})
 
 const columns: DataTableColumns<Image> = [
   {
     title: '镜像ID',
     key: 'id',
-    width: 130,
+    width: 200,
     ellipsis: {
       tooltip: true
     }
   },
   {
     title: '镜像名称',
-    key: 'name',
+    key: 'imageName',
     ellipsis: {
       tooltip: true
     }
   },
   {
     title: '镜像标签',
-    key: 'tags',
+    key: 'labels',
 
     ellipsis: {
       tooltip: true
     },
     render(row) {
-      const tags = row.tags.map((tagKey) => {
+      if (row.labels === null) return null
+      const tags = row.labels.map((tagKey) => {
         return h(
           NTag,
           {
@@ -159,10 +175,14 @@ const columns: DataTableColumns<Image> = [
   },
   {
     title: '创建时间',
-    key: 'createdAt',
+    key: 'createdTime',
     width: 150,
     ellipsis: {
       tooltip: true
+    },
+    render: (row) => {
+      const date = new Date(row.createTime * 1000)
+      return date.toLocaleString()
     }
   },
   {
@@ -194,7 +214,7 @@ const columns: DataTableColumns<Image> = [
                     onClick: () => {
                       showCreatePodModal.value = true
                       imageID.value = row.id
-                      imageName.value = row.name
+                      imageName.value = row.imageName
                     }
                   },
                   {
@@ -221,7 +241,7 @@ const columns: DataTableColumns<Image> = [
                         text: true,
                         onClick: () => {
                           showModifyPodModal.value = true
-                          modifyImageName.value = row.name
+                          modifyImageName.value = row.imageName
                         }
                       },
                       {
@@ -247,7 +267,7 @@ const columns: DataTableColumns<Image> = [
                         size: 'large',
                         type: 'warning',
                         text: true,
-                        onClick: () => handleDeleteImage(row.id, row.name)
+                        onClick: () => handleDeleteImage(row.id, row.imageName)
                       },
                       {
                         default: () => h(NIcon, { size: 18 }, { default: () => h(DeleteIcon) })

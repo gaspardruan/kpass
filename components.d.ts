@@ -14,6 +14,8 @@ declare module 'vue' {
     CreatePod: typeof import('./src/components/CreatePod.vue')['default']
     DeleteDialog: typeof import('./src/components/DeleteDialog.vue')['default']
     DeleteModal: typeof import('./src/components/DeleteModal.vue')['default']
+    ExposePod: typeof import('./src/components/ExposePod.vue')['default']
+    ExposePodModal: typeof import('./src/components/ExposePodModal.vue')['default']
     GlobalContent: typeof import('./src/components/GlobalContent.vue')['default']
     GlobalHeader: typeof import('./src/components/GlobalHeader.vue')['default']
     ModifyImage: typeof import('./src/components/ModifyImage.vue')['default']
