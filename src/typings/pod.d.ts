@@ -31,6 +31,15 @@ interface CreatePodV2 {
   labels: string[]
 }
 
+interface CreateDeployForm {
+  name: string
+  image: string
+  port: number | null
+  envVars: string
+  labels: string
+  userId: string
+}
+
 interface Deployment {
   name: string
   availableReplicas: number

@@ -19,3 +19,9 @@ export const deletePod = (podName: string) => {
 export const deleteDeploy = (deployName: string) => {
   return backend.post(`/delete/deployment?deploymentName=` + deployName)
 }
+
+export const createDeploy = (data: CreateDeployForm) => {
+  return backend.post(
+    `/create/deployment?name=${data.name}&image=${data.image}&port=${data.port}&envVars=${data.envVars}&labels=${data.labels}&userId=${data.userId}`
+  )
+}

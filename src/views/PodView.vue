@@ -1,6 +1,6 @@
 <template>
   <div class="py-3 w-4/5 mx-auto">
-    <table-header title="Pod" @click="showCreatePodModal = true" />
+    <table-header title="Pod" @click="showCreateDeployModal = true" />
 
     <div :style="{ fontFamily: 'en-content' }">
       <n-tabs type="line" animated>
@@ -23,7 +23,7 @@
       </n-tabs>
     </div>
 
-    <mutate-pod v-model:show="showCreatePodModal" type="create" target="both" />
+    <create-deploy-modal v-model:show="showCreateDeployModal" @deployCreated="reloadData" />
     <mutate-pod
       v-model:show="showUpdatePodModal"
       type="update"
@@ -57,7 +57,7 @@ import { getDeployList, getPodList, deletePod, deleteDeploy } from '@/api/pod'
 const message = useMessage()
 const dialog = useDialog()
 
-const showCreatePodModal = ref(false)
+const showCreateDeployModal = ref(false)
 const showUpdatePodModal = ref(false)
 const showUpdateDeployModal = ref(false)
 const showExposePodModal = ref(false)
@@ -145,6 +145,15 @@ onMounted(() => {
     deployData.value = res.data.deploymentListInfoList
   })
 })
+
+const reloadData = () => {
+  getPodList().then((res) => {
+    data.value = res.data.podInfoList
+  })
+  getDeployList().then((res) => {
+    deployData.value = res.data.deploymentListInfoList
+  })
+}
 
 const pagination = {
   pageSize: 5

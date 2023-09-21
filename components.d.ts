@@ -10,6 +10,7 @@ declare module 'vue' {
     BlogInfoPanel: typeof import('./src/components/article/BlogInfoPanel.vue')['default']
     BlogList: typeof import('./src/components/article/BlogList.vue')['default']
     BlogListItem: typeof import('./src/components/article/BlogListItem.vue')['default']
+    CreateDeployModal: typeof import('./src/components/CreateDeployModal.vue')['default']
     CreateImage: typeof import('./src/components/CreateImage.vue')['default']
     CreatePod: typeof import('./src/components/CreatePod.vue')['default']
     DeleteDialog: typeof import('./src/components/DeleteDialog.vue')['default']
