@@ -15,3 +15,12 @@ export const getPublicImageList = () => {
 export const getUserImageList = (id: number) => {
   return backend.get(`/get/imagelist`, { params: { userId: id } })
 }
+
+export const createImage = (data: CreateImageForm) => {
+  const formData = new FormData()
+  formData.append('imageName', data.imageName)
+  formData.append('labels', data.labels)
+  formData.append('userId', data.userId)
+  formData.append('dockerfile', data.dockerfile as File)
+  return backend.post(`/create/image/dockerfile`, formData)
+}

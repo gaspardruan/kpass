@@ -12,21 +12,21 @@
   >
     <n-form
       :rules="rules"
-      :model="exposedPod"
+      :model="exposedDeploy"
       label-placement="left"
       label-width="auto"
       require-mark-placement="right-hanging"
       size="medium"
     >
-      <n-form-item label="pod名称" path="podName">
-        <n-input disabled v-model:value="exposedPod.podName" placeholder="Pod名称" />
+      <n-form-item label="pod名称" path="deployName">
+        <n-input disabled v-model:value="exposedDeploy.deployName" placeholder="Pod名称" />
       </n-form-item>
-      <n-form-item label="端口" path="podPort">
+      <n-form-item label="端口" path="deployPort">
         <n-input-number
           :show-button="false"
           min="20000"
           max="40000"
-          v-model:value="exposedPod.podPort"
+          v-model:value="exposedDeploy.deployPort"
           placeholder="端口"
         />
       </n-form-item>
@@ -42,13 +42,13 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import { exposePod } from '@/api/pod'
+import { exposeDeploy } from '@/api/pod'
 import { useMessage } from 'naive-ui'
 
 const message = useMessage()
 // const dialog = useDialog()
 
-const props = defineProps<{ show: boolean; podName: string }>()
+const props = defineProps<{ show: boolean; deployName: string }>()
 const emit = defineEmits(['update:show'])
 
 const showExposePodModal = computed({
@@ -56,23 +56,23 @@ const showExposePodModal = computed({
   set: (val) => emit('update:show', val)
 })
 
-const exposedPod = ref<ExposePod>({
-  podName: props.podName,
-  podPort: null
+const exposedDeploy = ref<ExposeDeploy>({
+  deployName: props.deployName,
+  deployPort: null
 })
 
 watch(
-  () => props.podName,
+  () => props.deployName,
   () => {
-    exposedPod.value.podName = props.podName
+    exposedDeploy.value.deployName = props.deployName
   }
 )
 
 const rules = {
-  podName: {
+  deployName: {
     required: true
   },
-  podPort: {
+  deployPort: {
     type: 'number',
     required: true
   }
@@ -80,16 +80,16 @@ const rules = {
 
 const cleanPodModal = () => {
   showExposePodModal.value = false
-  exposedPod.value.podPort = null
+  exposedDeploy.value.deployPort = null
 }
 
 const handleExposePod = () => {
-  console.log(exposedPod.value)
-  if (exposedPod.value.podPort === null) exposedPod.value.podPort = 0
-  exposePod(exposedPod.value.podName, exposedPod.value.podPort).then((res) => {
+  console.log(exposedDeploy.value)
+  if (exposedDeploy.value.deployPort === null) exposedDeploy.value.deployPort = 0
+  exposeDeploy(exposedDeploy.value.deployName, exposedDeploy.value.deployPort).then((res) => {
     if (res.status === 200) {
       message.success(
-        '暴露Pod: ' + exposedPod.value.podName + '到端口: ' + exposedPod.value.podPort
+        '暴露Pod: ' + exposedDeploy.value.deployName + '到端口: ' + exposedDeploy.value.deployPort
       )
     } else {
       message.warning('暴露Pod失败')

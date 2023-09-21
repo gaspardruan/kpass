@@ -23,7 +23,7 @@
       </n-tabs>
     </div>
 
-    <create-image v-model:show="showModal" />
+    <simple-create-image v-model:show="showModal" />
     <simple-create-pod
       v-model:show="showCreatePodModal"
       :imageID="imageID"
@@ -115,21 +115,24 @@ const columns: DataTableColumns<Image> = [
     },
     render(row) {
       if (row.labels === null) return null
-      const tags = row.labels.map((tagKey) => {
-        return h(
-          NTag,
-          {
-            style: {
-              marginRight: '6px'
+      let tags = []
+      for (let item of Object.entries(row.labels)) {
+        tags.push(
+          h(
+            NTag,
+            {
+              style: {
+                marginRight: '6px'
+              },
+              type: 'info',
+              bordered: false
             },
-            type: 'info',
-            bordered: false
-          },
-          {
-            default: () => tagKey
-          }
+            {
+              default: () => item[0] + ':' + item[1]
+            }
+          )
         )
-      })
+      }
       return tags
     }
   },

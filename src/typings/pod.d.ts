@@ -53,7 +53,7 @@ interface Deployment {
   labels: object
 }
 
-interface ExposePod {
-  podName: string
-  podPort: number | null
+interface ExposeDeploy {
+  deployName: string
+  deployPort: number | null
 }

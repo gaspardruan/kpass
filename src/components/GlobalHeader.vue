@@ -31,7 +31,7 @@
       >
         Pod
       </router-link>
-      <router-link
+      <!-- <router-link
         class="inline-block px-4 py-2 min-w-fit"
         :class="{
           'text-[#63e2b7]': inService,
@@ -41,7 +41,7 @@
         to="/service"
       >
         Service
-      </router-link>
+      </router-link> -->
     </div>
     <div class="flex-none w-32 flex justify-around">
       <n-avatar round size="large" class="bg-gray-400 text-lg"> K </n-avatar>
@@ -58,7 +58,7 @@ const route = useRoute()
 
 const inImage = computed(() => route.name === 'image')
 const inContainer = computed(() => route.name === 'pod')
-const inService = computed(() => route.name === 'service')
+// const inService = computed(() => route.name === 'service')
 // right part: icons
 </script>
 

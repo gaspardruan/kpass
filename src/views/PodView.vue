@@ -30,7 +30,7 @@
       @deployUpdated="reloadData"
     />
 
-    <expose-pod-modal v-model:show="showExposePodModal" :podName="exposePodName" />
+    <!-- <expose-deploy-modal v-model:show="showExposeDeployModal" :deployName="exposeDeployName" /> -->
   </div>
 </template>
 
@@ -46,19 +46,35 @@ import {
   CloseSharp as UnreadyIcon
 } from '@vicons/ionicons5'
 
-import { getDeployList, getPodList, deletePod, deleteDeploy } from '@/api/pod'
+import { getDeployList, getPodList, deletePod, deleteDeploy, exposeDeployRandom } from '@/api/pod'
 
 const message = useMessage()
 const dialog = useDialog()
 
 const showCreateDeployModal = ref(false)
 const showUpdateDeployModal = ref(false)
-const showExposePodModal = ref(false)
+// const showExposeDeployModal = ref(false)
 
-const exposePodName = ref('')
-const handleExposePod = (podName: string) => {
-  showExposePodModal.value = true
-  exposePodName.value = podName
+// const exposeDeployName = ref('')
+const handleExposeDeploy = (deployName: string) => {
+  // showExposeDeployModal.value = true
+  // exposeDeployName.value = deployName
+
+  exposeDeployRandom(deployName).then((res) => {
+    if (res.status === 200) {
+      dialog.success({
+        title: '暴露Deployment',
+        content: '暴露Deployment: ' + deployName + '成功，地址为: ' + res.data,
+        positiveText: '跳转',
+        negativeText: '取消',
+        onPositiveClick: () => {
+          window.open('http://' + res.data)
+        }
+      })
+    } else {
+      message.warning('暴露Deployment失败')
+    }
+  })
 }
 
 const toUpdateDeployName = ref('')
@@ -222,6 +238,28 @@ const deployColumns: DataTableColumns<Deployment> = [
               trigger: 'hover'
             },
             {
+              default: () => '暴露Deployment',
+              trigger: () =>
+                h(
+                  NButton,
+                  {
+                    size: 'large',
+                    type: 'primary',
+                    text: true,
+                    onClick: () => handleExposeDeploy(row.name)
+                  },
+                  {
+                    default: () => h(NIcon, { size: 18 }, { default: () => h(PortIcon) })
+                  }
+                )
+            }
+          ),
+          h(
+            NTooltip,
+            {
+              trigger: 'hover'
+            },
+            {
               default: () => '修改Deployment',
               trigger: () =>
                 h(
@@ -329,28 +367,6 @@ const columns: DataTableColumns<Pod2> = [
           class: 'flex justify-around w-24'
         },
         [
-          h(
-            NTooltip,
-            {
-              trigger: 'hover'
-            },
-            {
-              default: () => '暴露Pod',
-              trigger: () =>
-                h(
-                  NButton,
-                  {
-                    size: 'large',
-                    type: 'primary',
-                    text: true,
-                    onClick: () => handleExposePod(row.name)
-                  },
-                  {
-                    default: () => h(NIcon, { size: 18 }, { default: () => h(PortIcon) })
-                  }
-                )
-            }
-          ),
           h(
             NTooltip,
             {

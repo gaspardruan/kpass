@@ -8,8 +8,14 @@ export const getPodList = () => {
   return backend.get(`/get/podlist`)
 }
 
-export const exposePod = (podName: string, port: number) => {
-  return backend.get(`/get/podIp`, { params: { podName: podName, port: port } })
+export const exposeDeploy = (deployName: string, deployPort: number) => {
+  return backend.get(`/get/deploymentIp`, {
+    params: { deploymentName: deployName, deploymentPort: deployPort }
+  })
+}
+
+export const exposeDeployRandom = (deployName: string) => {
+  return backend.get(`/get/deploymentIp`, { params: { deploymentName: deployName } })
 }
 
 export const deletePod = (podName: string) => {
