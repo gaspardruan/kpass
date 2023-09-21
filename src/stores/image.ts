@@ -40,13 +40,21 @@ const useImageStore = defineStore('image', () => {
     privateImage.value = images
   }
 
+  function removeImageById(imageId: string) {
+    const index = publicImage.value.findIndex((image) => image.imageId === imageId)
+    if (index !== -1) {
+      publicImage.value.splice(index, 1)
+    }
+  }
+
   return {
     publicImage,
     privateImage,
 
     imageNameList,
     setPublicImage,
-    setPrivateImage
+    setPrivateImage,
+    removeImageById
   }
 })
 

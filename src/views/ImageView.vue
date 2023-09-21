@@ -43,8 +43,10 @@ import {
   TrashBinSharp as DeleteIcon
 } from '@vicons/ionicons5'
 
+import { deleteImage } from '@/api/image'
 import useImageStore from '@/stores/image'
 const imageStore = useImageStore()
+const { removeImageById } = useImageStore()
 
 const curTab = ref('privateImage')
 const handleTabUpdate = (tab: string) => {
@@ -73,7 +75,14 @@ const handleDeleteImage = (imageID: string, imageName: string) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
-      message.success('删除镜像' + imageID + '成功')
+      deleteImage(imageID).then((res) => {
+        if (res.data === true) {
+          removeImageById(imageID)
+          message.success('删除镜像' + imageName + '成功')
+        } else {
+          message.warning('删除镜像' + imageName + '失败')
+        }
+      })
     }
   })
 }

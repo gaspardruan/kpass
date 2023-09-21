@@ -44,22 +44,73 @@
       </router-link> -->
     </div>
     <div class="flex-none w-32 flex justify-around">
-      <n-avatar round size="large" class="bg-gray-400 text-lg"> K </n-avatar>
+      <n-dropdown trigger="hover" :options="options" @select="handleSelect">
+        <n-avatar round size="large" class="bg-gray-400 text-lg"> K </n-avatar>
+      </n-dropdown>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, h } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { NAvatar, NDropdown, NText } from 'naive-ui'
 import BrandImg from '/kpass.svg'
+import useUserStore from '@/stores/user'
 
 const route = useRoute()
-
+const userStore = useUserStore()
+const { setUserId } = useUserStore()
 const inImage = computed(() => route.name === 'image')
 const inContainer = computed(() => route.name === 'pod')
 // const inService = computed(() => route.name === 'service')
 // right part: icons
+
+function renderCustomHeader() {
+  return h(
+    'div',
+    {
+      style: 'display: flex; align-items: center; padding: 8px 12px;'
+    },
+    [
+      h(NAvatar, {
+        round: true,
+        style: 'margin-right: 12px;',
+        src: 'https://07akioni.oss-cn-beijing.aliyuncs.com/demo1.JPG'
+      }),
+      h('div', null, [
+        h('div', null, [h(NText, { depth: 2 }, { default: () => 'ID: ' + userStore.userId })]),
+        h('div', { style: 'font-size: 12px;' }, [
+          h(NText, { depth: 3 }, { default: () => '点击切换用户' })
+        ])
+      ])
+    ]
+  )
+}
+
+const options = [
+  {
+    key: 'header',
+    type: 'render',
+    render: renderCustomHeader
+  },
+  {
+    key: 'header-divider',
+    type: 'divider'
+  },
+  {
+    label: '用户ID:123',
+    key: '123'
+  },
+  {
+    label: '用户ID:456',
+    key: '456'
+  }
+]
+
+function handleSelect(key: string) {
+  setUserId(key)
+}
 </script>
 
 <style scoped></style>

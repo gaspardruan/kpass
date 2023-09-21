@@ -12,7 +12,7 @@ export const getPublicImageList = () => {
   return backend.get(`/get/imagelist`, { params: { labels: `{"isPublic":"true"}` } })
 }
 
-export const getUserImageList = (id: number) => {
+export const getUserImageList = (id: string) => {
   return backend.get(`/get/imagelist`, { params: { userId: id } })
 }
 
@@ -23,4 +23,8 @@ export const createImage = (data: CreateImageForm) => {
   formData.append('userId', data.userId)
   formData.append('dockerfile', data.dockerfile as File)
   return backend.post(`/create/image/dockerfile`, formData)
+}
+
+export const deleteImage = (id: string) => {
+  return backend.post(`/delete/image?imageId=${id}`)
 }

@@ -142,20 +142,20 @@ const deployData = ref<Deployment[]>([
 
 onMounted(() => {
   getPodList().then((res) => {
-    data.value = res.data.podInfoList
+    data.value = res.data.podInfoList.reverse()
   })
   getDeployList().then((res) => {
-    deployData.value = res.data.deploymentListInfoList
+    deployData.value = res.data.deploymentListInfoList.reverse()
   })
 })
 
 const reloadData = () => {
   setTimeout(() => {
     getPodList().then((res) => {
-      data.value = res.data.podInfoList
+      data.value = res.data.podInfoList.reverse()
     })
     getDeployList().then((res) => {
-      deployData.value = res.data.deploymentListInfoList
+      deployData.value = res.data.deploymentListInfoList.reverse()
     })
   }, 100)
 }
