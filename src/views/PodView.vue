@@ -52,7 +52,7 @@ import {
   CloseSharp as UnreadyIcon
 } from '@vicons/ionicons5'
 
-import { getDeployList, getPodList } from '@/api/pod'
+import { getDeployList, getPodList, deletePod, deleteDeploy } from '@/api/pod'
 
 const message = useMessage()
 const dialog = useDialog()
@@ -87,19 +87,33 @@ const handleDeletePod = (podName: string) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
-      message.success('删除Pod: ' + podName + '成功')
+      deleteDeploy(podName).then((res) => {
+        if (res.data === true) {
+          message.success('删除Pod: ' + podName + '成功')
+          data.value = data.value.filter((pod) => pod.name != podName)
+        } else {
+          message.error('删除失败')
+        }
+      })
     }
   })
 }
 
-const handleDeleteDeploy = (podName: string) => {
+const handleDeleteDeploy = (deployName: string) => {
   dialog.warning({
     title: '删除 Deployment',
-    content: '确定删除Deployment: ' + podName + ' 吗？',
+    content: '确定删除Deployment ' + deployName + ' 吗？',
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
-      message.success('删除Deployment: ' + podName + '成功')
+      deleteDeploy(deployName).then((res) => {
+        if (res.data === true) {
+          message.success('删除Deployment: ' + deployName + '成功')
+          deployData.value = deployData.value.filter((deploy) => deploy.name != deployName)
+        } else {
+          message.error('删除失败')
+        }
+      })
     }
   })
 }
