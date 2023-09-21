@@ -87,7 +87,7 @@ const handleDeletePod = (podName: string) => {
     positiveText: '确定',
     negativeText: '取消',
     onPositiveClick: () => {
-      deleteDeploy(podName).then((res) => {
+      deletePod(podName).then((res) => {
         if (res.data === true) {
           message.success('删除Pod: ' + podName + '成功')
           data.value = data.value.filter((pod) => pod.name != podName)
